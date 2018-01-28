@@ -2,6 +2,8 @@
 
 ![alt text](https://raw.githubusercontent.com/rognstadragnar/aoudad/master/logo.png)
 
+## Motivation
+
 Nobody thinks the JS community needs another state management library, so I made one to spite you all.
 
 ## Usage
@@ -64,7 +66,7 @@ export default store.connect(mapStateToProps)(SomeComponent)
 // Some component has access to myValue and all the actions in the store
 ```
 
-#### Passing in actions
+#### Passing in certain actions
 
 ```Javascript
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
@@ -77,7 +79,7 @@ function mapStateToProps(state) {
 
 function mapActionsToProps(actions) {
   return {
-    setName: actions.setName
+    setName: actions.setName,
     setUpperCaseName: (value) => actions.setName(value.toUpperCase())
   }
 }
