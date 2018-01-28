@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/rognstadragnar/mehdux/master/logo.png)
+![alt text](https://raw.githubusercontent.com/rognstadragnar/mehdux/master/mehdux.png)
 
 # mehdux
 
