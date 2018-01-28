@@ -13,6 +13,4 @@ const createActions = (actions, update) => {
   })
 }
 
-// const update = (key, value) => (...args) => `key: ${args}, value: ${value}`
-
 export { mapObj, createActions }

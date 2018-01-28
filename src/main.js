@@ -4,7 +4,12 @@ import { createActions } from './lib/helpers'
 const stateManager = (initialState = {}, updateFn, _actions = {}) => {
   let state = initialState
   let subscribers = []
-  const emit = () => subscribers.forEach(s => s(state, actions))
+  let connections = []
+
+  const emit = () => {
+    connections.forEach(c => c(state, actions))
+    subscribers.forEach(s => s({ ...state, ...actions }))
+  }
 
   const update = (msg, payload) => {
     const prevState = state
@@ -15,10 +20,15 @@ const stateManager = (initialState = {}, updateFn, _actions = {}) => {
       return { msg, payload }
     }
   }
+
   const actions = createActions(_actions, update)
 
-  const unsubscribe = subscriber => {
-    subscribers = subscribers.filter(s => s !== subscriber)
+  const unsubscribe = (listener, type) => {
+    if (type === 'connection') {
+      connections = connections.filter(c => c !== listener)
+    } else {
+      subscribers = subscribers.filter(s => s !== subscriber)
+    }
   }
 
   return {
@@ -30,25 +40,28 @@ const stateManager = (initialState = {}, updateFn, _actions = {}) => {
       }
     },
     getState: () => ({ ...state }),
-    update
-  }
-}
-
-function connect(mapStateToProps, mapActionsToProps) {
-  let prevRes = null
-
-  return consumer => {
-    return (state, actions) => {
-      const currentRes = mapStateToProps ? mapStateToProps(state) : state
-      const currentActions = mapActionsToProps
-        ? mapActionsToProps(actions)
-        : actions
-      if (isDifferent(prevRes, currentRes)) {
-        prevRes = currentRes
-        consumer({ ...currentRes, ...currentActions })
+    update,
+    connect: (mapStateToProps, mapActionsToProps) => {
+      let prevRes = null
+      return consumer => {
+        const connection = (state, actions) => {
+          const currentRes = mapStateToProps ? mapStateToProps(state) : state
+          const currentActions = mapActionsToProps
+            ? mapActionsToProps(actions)
+            : actions
+          if (isDifferent(prevRes, currentRes)) {
+            prevRes = currentRes
+            consumer({ ...currentRes, ...currentActions })
+          }
+        }
+        connections.push(connection)
+        return {
+          state,
+          unsubscribe: () => unsubscribe(connection, 'connection')
+        }
       }
     }
   }
 }
 
-export { stateManager, connect }
+export { stateManager }
