@@ -1,9 +1,9 @@
 {
-  "name": "aoudad",
+  "name": "mehdux",
   "version": "0.1.0",
-  "main": "dist/aoudad.cjs.js",
-  "module": "dist/aoudad.esm.js",
-  "browser": "dist/aoudad.umd.js",
+  "main": "dist/mehdux.cjs.js",
+  "module": "dist/mehdux.esm.js",
+  "browser": "dist/mehdux.umd.js",
   "devDependencies": {
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -25,7 +25,5 @@
     "dev": "rollup -c -w",
     "pretest": "npm run build"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }

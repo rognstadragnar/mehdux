@@ -1,4 +1,6 @@
-![alt text](https://raw.githubusercontent.com/rognstadragnar/aoudad/master/logo.png)
+![alt text](https://raw.githubusercontent.com/rognstadragnar/mehdux/master/logo.png)
+
+# mehdux
 
 Just another state management library
 
@@ -17,13 +19,13 @@ Nobody thinks the JS community needs another state management library, so I made
 ## Usage (soon™)
 
 ```
-npm install aoudad
+npm install mehdux
 ```
 
-### Initializing Aoudad
+### Initializing mehdux
 
 ```Javascript
-import { stateManager } from 'aoudad'
+import { stateManager } from 'mehdux'
 
 const initialState = {
   someValue: 'My value'
@@ -53,7 +55,7 @@ store.actions.setValue('A cooler value')
 ### Usage with other frameworks
 
 ```Javascript
-import { connect } from 'aoudad/react' // or 'aoudad/preact
+import { connect } from 'mehdux/react' // or 'mehdux/preact
 
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
 
@@ -64,7 +66,7 @@ export default connect(store)(SomeComponent)
 #### Listening to just certain parts of the state tree
 
 ```Javascript
-import { connect } from 'aoudad/react' // or 'aoudad/preact
+import { connect } from 'mehdux/react' // or 'mehdux/preact
 
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
 
@@ -81,7 +83,7 @@ export default connect(state, mapStateToProps)(SomeComponent)
 #### Passing in certain actions
 
 ```Javascript
-import { connect } from 'aoudad/react' // or 'aoudad/preact'
+import { connect } from 'mehdux/react' // or 'mehdux/preact'
 
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
 

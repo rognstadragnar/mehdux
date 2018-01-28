@@ -8,7 +8,7 @@ export default [
     entry: 'src/main.js',
     dest: pkg.browser,
     format: 'umd',
-    moduleName: 'aoudad',
+    moduleName: 'mehdux',
     plugins: [
       babel({
         exclude: ['node_modules/**']
