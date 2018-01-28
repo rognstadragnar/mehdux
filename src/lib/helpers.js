@@ -1,15 +1,12 @@
-const mapObj = (root, map) => {
-  const obj = {}
-  for (let v in root) {
-    obj[v] = map(v, root[v])
-  }
-  return obj
+const mapObj = (r, fn) => {
+  const o = {}
+  for (let v in r) o[v] = fn(r[v])
+  return o
 }
 
-const createActions = (actions, update) => {
-  return mapObj(actions, (key, value) => (...args) => {
-    const { msg, payload } = value(...args)
-    return update(msg, payload)
+const createActions = (actions, state, dispatch, setState) => {
+  return mapObj(actions, fn => (...args) => {
+    return setState(fn(state(), dispatch)(...args))
   })
 }
 

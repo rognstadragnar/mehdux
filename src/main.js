@@ -1,7 +1,7 @@
 import { isDifferent } from './lib/diff'
 import { createActions } from './lib/helpers'
 
-const stateManager = (initialState = {}, updateFn, _actions = {}) => {
+const stateManager = (initialState = {}, _actions = {}) => {
   let state = initialState
   let subscribers = []
   let connections = []
@@ -11,38 +11,38 @@ const stateManager = (initialState = {}, updateFn, _actions = {}) => {
     subscribers.forEach(s => s({ ...state, ...actions }))
   }
 
-  const update = (msg, payload) => {
-    const prevState = state
-    const newState = updateFn(state, msg, payload)
-    if (isDifferent(prevState, newState)) {
+  const getState = () => ({ ...state })
+  const setState = newState => {
+    if (newState !== undefined && isDifferent(state, newState)) {
       state = newState
       emit()
-      return { msg, payload }
     }
   }
 
-  const actions = createActions(_actions, update)
+  const actions = createActions(_actions, getState, dispatch, setState)
 
-  const unsubscribe = (listener, type) => {
-    if (type === 'connection') {
-      connections = connections.filter(c => c !== listener)
-    } else {
-      subscribers = subscribers.filter(s => s !== subscriber)
-    }
+  function dispatch(actionType, ...args) {
+    setState(actions[actionType](...args))
+  }
+
+  const dispose = connection => {
+    connections = connections.filter(c => c !== connection)
+  }
+  const unsubscribe = subscriber => {
+    subscribers = subscribers.filter(s => s !== subscriber)
   }
 
   return {
     subscribe: subscriber => {
       subscribers.push(subscriber)
       return {
-        unsubscribe: () => unsubscribe(subscriber),
-        actions
+        unsubscribe: () => unsubscribe(subscriber)
       }
     },
-    getState: () => ({ ...state }),
-    update,
+    getState,
+    actions,
     connect: (mapStateToProps, mapActionsToProps) => {
-      let prevRes = null
+      let prevRes = mapStateToProps ? mapStateToProps(state) : state
       return consumer => {
         const connection = (state, actions) => {
           const currentRes = mapStateToProps ? mapStateToProps(state) : state
@@ -50,14 +50,14 @@ const stateManager = (initialState = {}, updateFn, _actions = {}) => {
             ? mapActionsToProps(actions)
             : actions
           if (isDifferent(prevRes, currentRes)) {
+            console.log('isDifferent', prevRes, currentRes)
             prevRes = currentRes
             consumer({ ...currentRes, ...currentActions })
           }
         }
         connections.push(connection)
         return {
-          state,
-          unsubscribe: () => unsubscribe(connection, 'connection')
+          dispose: () => dispose(connection)
         }
       }
     }

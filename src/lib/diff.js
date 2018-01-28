@@ -20,15 +20,11 @@ function compareObj(a, b, recursion) {
   const aKeys = Object.keys(a)
   const bKeys = Object.keys(b)
   if (aKeys.length !== bKeys.length) return true
-  const keyDiff =
-    aKeys.filter((key, idx) => {
-      if (key === bKeys[idx]) {
-        return !recursion(a[key], b[key])
-      }
-      return false
-    }).length === 0
-
-  return keyDiff
+  return (
+    aKeys.filter(
+      (key, idx) => (key === bKeys[idx] ? recursion(a[key], b[key]) : false)
+    ).length !== 0
+  )
 }
 
 export { isDifferent }
