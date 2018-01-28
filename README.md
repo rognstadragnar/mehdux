@@ -22,7 +22,7 @@ const initialState = {
 }
 
 const actions = {
-  setName: (state, dispatch) => {
+  setName: state => {
     return value => ({
       ...state,
       someValue: value
@@ -90,6 +90,24 @@ export default store.connect(null, mapActionsToProps)(SomeComponent)
 Some component has access to the whole state tree
 and the setName and setUpperCaseName functions
 */
+```
+
+#### Dispatching async thunk-like actions
+
+```Javascript
+const actions = {
+  setName: state => {
+    return value => ({
+      ...state,
+      someValue: value
+    })
+  },
+  fetchAndSetName: async (state, dispatch) => {
+    const res = await fetch('https://myapi.com/v0')
+    const data = await res.json()
+    dispatch('setName', data.name)
+  }
+}
 ```
 
 ## License
