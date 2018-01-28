@@ -1,4 +1,6 @@
-![alt text](https://raw.githubusercontent.com/rognstadragnar/aoudad/master/mehdux.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rognstadragnar/aoudad/master/mehdux.png" alt="mehdux">
+</p>
 
 # mehdux
 
