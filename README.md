@@ -1,5 +1,7 @@
 ![alt text](https://raw.githubusercontent.com/rognstadragnar/aoudad/master/logo.png)
 
+Just another state management library
+
 ## Motivation
 
 Nobody thinks the JS community needs another state management library, so I made one to spite you all.
