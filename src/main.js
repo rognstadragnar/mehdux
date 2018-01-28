@@ -1,17 +1,19 @@
 import { isDifferent } from './lib/diff'
 import { createActions } from './lib/helpers'
+import { connect } from './bindings/react'
 
 const stateManager = (initialState = {}, _actions = {}) => {
   let state = initialState
-  let subscribers = []
   let connections = []
 
-  const emit = () => {
-    connections.forEach(c => c(state, actions))
-    subscribers.forEach(s => s({ ...state, ...actions }))
-  }
+  const emit = () => connections.forEach(c => c(state, actions))
 
-  const getState = () => ({ ...state })
+  const getState = mapStateToProps =>
+    mapStateToProps ? mapStateToProps(state) : state
+
+  const getActions = mapDispatchToProps =>
+    mapDispatchToProps ? mapDispatchToProps(actions) : actions
+
   const setState = newState => {
     if (newState !== undefined && isDifferent(state, newState)) {
       state = newState
@@ -28,31 +30,19 @@ const stateManager = (initialState = {}, _actions = {}) => {
   const dispose = connection => {
     connections = connections.filter(c => c !== connection)
   }
-  const unsubscribe = subscriber => {
-    subscribers = subscribers.filter(s => s !== subscriber)
-  }
 
   return {
-    subscribe: subscriber => {
-      subscribers.push(subscriber)
-      return {
-        unsubscribe: () => unsubscribe(subscriber)
-      }
-    },
     getState,
+    getActions,
     actions,
     connect: (mapStateToProps, mapActionsToProps) => {
       let prevRes = mapStateToProps ? mapStateToProps(state) : state
       return consumer => {
         const connection = (state, actions) => {
-          const currentRes = mapStateToProps ? mapStateToProps(state) : state
-          const currentActions = mapActionsToProps
-            ? mapActionsToProps(actions)
-            : actions
+          const currentRes = getState(mapStateToProps)
           if (isDifferent(prevRes, currentRes)) {
-            console.log('isDifferent', prevRes, currentRes)
             prevRes = currentRes
-            consumer({ ...currentRes, ...currentActions })
+            consumer({ ...currentRes, ...getActions(mapActionsToProps) })
           }
         }
         connections.push(connection)
@@ -64,4 +54,4 @@ const stateManager = (initialState = {}, _actions = {}) => {
   }
 }
 
-export { stateManager }
+export { stateManager, connect }

@@ -6,7 +6,15 @@ Just another state management library
 
 Nobody thinks the JS community needs another state management library, so I made one to spite you all.
 
-## Usage
+## Todo
+
+1. Fix connect for Preact/React components
+
+* Be able to pass in store or use context or provider
+
+2. Less fancy JS -> smaller bundle
+
+## Usage (soon™)
 
 ```
 npm install aoudad
@@ -45,15 +53,19 @@ store.actions.setValue('A cooler value')
 ### Usage with other frameworks
 
 ```Javascript
+import { connect } from 'aoudad/react' // or 'aoudad/preact
+
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
 
-export default store.connect()(SomeComponent)
+export default connect(store)(SomeComponent)
 // Some component has access the whole state and all the actions in the store
 ```
 
 #### Listening to just certain parts of the state tree
 
 ```Javascript
+import { connect } from 'aoudad/react' // or 'aoudad/preact
+
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
 
 function mapStateToProps(state) {
@@ -62,13 +74,15 @@ function mapStateToProps(state) {
   }
 }
 
-export default store.connect(mapStateToProps)(SomeComponent)
+export default connect(state, mapStateToProps)(SomeComponent)
 // Some component has access to myValue and all the actions in the store
 ```
 
 #### Passing in certain actions
 
 ```Javascript
+import { connect } from 'aoudad/react' // or 'aoudad/preact'
+
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
 
 function mapStateToProps(state) {
@@ -84,7 +98,7 @@ function mapActionsToProps(actions) {
   }
 }
 
-export default store.connect(null, mapActionsToProps)(SomeComponent)
+export default store.connect(store, null, mapActionsToProps)(SomeComponent)
 
 /*
 Some component has access to the whole state tree

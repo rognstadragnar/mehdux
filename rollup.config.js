@@ -1,6 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 import pkg from './package.json'
+import commonjs from 'rollup-plugin-commonjs'
 
 export default [
   {
@@ -9,9 +10,21 @@ export default [
     format: 'umd',
     moduleName: 'aoudad',
     plugins: [
-      resolve(),
       babel({
         exclude: ['node_modules/**']
+      }),
+      resolve({
+        // pass custom options to the resolve plugin
+        customResolveOptions: {
+          moduleDirectory: 'node_modules'
+        }
+      }),
+      commonjs({
+        extensions: ['.js', '.json'],
+        namedExports: {
+          react: ['Component', 'createElement'],
+          preact: ['h', 'Component']
+        }
       })
     ]
   },
@@ -30,6 +43,19 @@ export default [
     plugins: [
       babel({
         exclude: ['node_modules/**']
+      }),
+      resolve({
+        // pass custom options to the resolve plugin
+        customResolveOptions: {
+          moduleDirectory: 'node_modules'
+        }
+      }),
+      commonjs({
+        extensions: ['.js', '.json'],
+        namedExports: {
+          react: ['Component', 'createElement'],
+          preact: ['h', 'Component']
+        }
       })
     ]
   }
