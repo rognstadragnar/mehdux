@@ -78,7 +78,7 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(state, mapStateToProps)(SomeComponent)
+export default connect(store, state, mapStateToProps)(SomeComponent)
 // Some component has access to myValue and all the actions in the store
 ```
 
@@ -102,7 +102,7 @@ function mapActionsToProps(actions) {
   }
 }
 
-export default store.connect(store, null, mapActionsToProps)(SomeComponent)
+export default connect(store, null, mapActionsToProps)(SomeComponent)
 
 /*
 Some component has access to the whole state tree
