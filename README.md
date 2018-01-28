@@ -1,5 +1,3 @@
-# Aoudad
-
 ![alt text](https://raw.githubusercontent.com/rognstadragnar/aoudad/master/logo.png)
 
 ## Motivation
