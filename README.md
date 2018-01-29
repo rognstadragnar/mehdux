@@ -4,21 +4,17 @@
 
 # mehdux
 
-Just another state management library
+> Just another tiny, simple state machine
+
+* Easy to grasp API
+* Tiny: 577 bytes gzipped
+* Small React and Preact integrations (~750 bytes gzipped)
 
 ## Motivation
 
 Nobody thinks the JS community needs another state management library, so I made one to spite you all.
 
-## Todo
-
-1. Fix connect for Preact/React components
-
-* Be able to pass in store or use context or provider
-
-2. Less fancy JS -> smaller bundle
-
-## Usage (soon™)
+## Usage
 
 ```
 npm install mehdux
@@ -34,8 +30,7 @@ const initialState = {
 }
 
 const actions = {
-  setName: state => {
-    return value => ({
+  setName: state => value => ({
       ...state,
       someValue: value
     })

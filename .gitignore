@@ -2,5 +2,10 @@
 node_modules
 *.log
 .DS_Store
+/dist
+/full
 package-lock.json
-dist
+/preact.js
+/preact.js.map
+/react.js
+/react.js.map
