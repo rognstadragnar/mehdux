@@ -26,7 +26,8 @@
     "bundle:react": "microbundle src/react.js -o dist/react/index.js",
     "bundle":
       "npm run bundle:main && npm run bundle:preact && npm run bundle:react",
-    "build": "npm run bundle"
+    "build": "npm run bundle",
+    "test": "echo 'should add some tests.. :)'"
   },
   "files": ["dist"]
 }
