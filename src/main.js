@@ -1,6 +1,5 @@
 import { isDifferent } from './lib/diff'
 import { createActions } from './lib/helpers'
-import { connect } from './bindings/react'
 
 const stateManager = (initialState = {}, _actions = {}) => {
   let state = initialState
@@ -42,7 +41,7 @@ const stateManager = (initialState = {}, _actions = {}) => {
           const currentRes = getState(mapStateToProps)
           if (isDifferent(prevRes, currentRes)) {
             prevRes = currentRes
-            consumer({ ...currentRes, ...getActions(mapActionsToProps) })
+            consumer(Object.assign({}, currentRes, getActions(mapActionsToProps)))
           }
         }
         connections.push(connection)
@@ -54,4 +53,4 @@ const stateManager = (initialState = {}, _actions = {}) => {
   }
 }
 
-export { stateManager, connect }
+export { stateManager }

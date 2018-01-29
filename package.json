@@ -1,13 +1,17 @@
 {
   "name": "mehdux",
   "version": "0.1.0",
-  "main": "dist/mehdux.cjs.js",
+  "source": "src/main.js",
+  "main": "dist/mehdux.js",
   "module": "dist/mehdux.esm.js",
   "browser": "dist/mehdux.umd.js",
   "devDependencies": {
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.0",
+    "bundlesize": "^0.15.3",
+    "gzip-size": "^4.1.0",
+    "microbundle": "^0.4.3",
     "preact": "^8.2.7",
     "react": "^16.2.0",
     "rollup": "^0.46.0",
@@ -21,9 +25,16 @@
     "react": "*"
   },
   "scripts": {
+    "bundle:main": "microbundle",
+    "bundle:preact": "microbundle src/preact.js -o dist/preact/index.js",
+    "bundle:react": "microbundle src/react.js -o dist/react/index.js",
+    "bundle": "npm run bundle:main && npm run bundle:preact && npm run bundle:react",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "pretest": "npm run build"
+    "pretest": "npm run build",
+    "size": "gzip-size && bundlesize"
   },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ]
 }

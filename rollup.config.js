@@ -2,13 +2,14 @@ import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 import pkg from './package.json'
 import commonjs from 'rollup-plugin-commonjs'
-
+import uglify from 'rollup-plugin-uglify'
 export default [
   {
     entry: 'src/main.js',
     dest: pkg.browser,
     format: 'umd',
     moduleName: 'mehdux',
+    external: ['react', 'preact'],
     plugins: [
       babel({
         exclude: ['node_modules/**']
@@ -25,7 +26,8 @@ export default [
           react: ['Component', 'createElement'],
           preact: ['h', 'Component']
         }
-      })
+      }),
+      uglify()
     ]
   },
 
@@ -40,6 +42,7 @@ export default [
       { dest: pkg.main, format: 'cjs' },
       { dest: pkg.module, format: 'es' }
     ],
+    external: ['preact', 'react'],
     plugins: [
       babel({
         exclude: ['node_modules/**']
@@ -56,7 +59,8 @@ export default [
           react: ['Component', 'createElement'],
           preact: ['h', 'Component']
         }
-      })
+      }),
+      uglify()
     ]
   }
 ]
