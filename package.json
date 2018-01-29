@@ -1,40 +1,32 @@
 {
   "name": "mehdux",
+  "description": "A straight forward state container",
+  "author": "Ragnar Rognstad (http://rognstad.me)",
+  "repository": "rognstadragnar/mehdux",
+  "license": "MIT",
   "version": "0.1.0",
   "source": "src/main.js",
   "main": "dist/mehdux.js",
   "module": "dist/mehdux.esm.js",
   "browser": "dist/mehdux.umd.js",
   "devDependencies": {
-    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "bundlesize": "^0.15.3",
-    "gzip-size": "^4.1.0",
     "microbundle": "^0.4.3",
     "preact": "^8.2.7",
-    "react": "^16.2.0",
-    "rollup": "^0.46.0",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^3.0.0"
+    "react": "^16.2.0"
   },
   "peerDependencies": {
     "preact": "*",
     "react": "*"
   },
   "scripts": {
+    "release":
+      "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
     "bundle:preact": "microbundle src/preact.js -o dist/preact/index.js",
     "bundle:react": "microbundle src/react.js -o dist/react/index.js",
-    "bundle": "npm run bundle:main && npm run bundle:preact && npm run bundle:react",
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "pretest": "npm run build",
-    "size": "gzip-size && bundlesize"
+    "bundle":
+      "npm run bundle:main && npm run bundle:preact && npm run bundle:react",
+    "build": "npm run bundle"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }
