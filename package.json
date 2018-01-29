@@ -4,7 +4,7 @@
   "author": "Ragnar Rognstad (http://rognstad.me)",
   "repository": "rognstadragnar/mehdux",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "source": "src/main.js",
   "main": "dist/mehdux.js",
   "module": "dist/mehdux.esm.js",
@@ -22,11 +22,11 @@
     "release":
       "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
-    "bundle:preact": "microbundle src/preact.js -o dist/preact.js",
-    "bundle:react": "microbundle src/react.js -o dist/react.js",
-    "bundle":
+    "bundle:preact": "microbundle src/preact.js -o ./preact.js -f cjs",
+    "bundle:react": "microbundle src/react.js -o ./react.js -f cjs",
+    "build":
       "npm run bundle:main && npm run bundle:preact && npm run bundle:react",
-    "build": "npm run bundle",
+    "prepublish": "npm run build",
     "test": "echo 'should add some tests.. :)'"
   },
   "files": ["dist"]
