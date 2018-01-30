@@ -1,6 +1,7 @@
-<p align="center">
+<div align="center">
   <img src="https://raw.githubusercontent.com/rognstadragnar/aoudad/master/mehdux.png" alt="mehdux">
-</p>
+  <p>easy to grasp, tiny and has a wordart logo </p>
+</div>
 
 # mehdux
 
