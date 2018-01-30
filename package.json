@@ -4,7 +4,7 @@
   "author": "Ragnar Rognstad (http://rognstad.me)",
   "repository": "rognstadragnar/mehdux",
   "license": "MIT",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "source": "src/main.js",
   "main": "dist/mehdux.js",
   "module": "dist/mehdux.esm.js",
