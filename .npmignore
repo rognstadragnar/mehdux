@@ -1,0 +1,10 @@
+.idea
+node_modules
+package-lock.json
+*.log
+.DS_Store
+!**/dist
+!/preact.js
+!/preact.js.map
+!/react.js
+!/react.js.map
