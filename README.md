@@ -74,7 +74,7 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(store, state, mapStateToProps)(SomeComponent)
+export default connect(store, mapStateToProps)(SomeComponent)
 // Some component has access to myValue and all the actions in the store
 ```
 
@@ -84,12 +84,6 @@ export default connect(store, state, mapStateToProps)(SomeComponent)
 import { connect } from 'mehdux/react' // or 'mehdux/preact'
 
 const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
-
-function mapStateToProps(state) {
-  return {
-    myValue: state.something.i.care.about
-  }
-}
 
 function mapActionsToProps(actions) {
   return {
