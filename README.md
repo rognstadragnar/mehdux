@@ -1,6 +1,5 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/rognstadragnar/aoudad/master/mehdux.png" alt="mehdux">
-  <p>easy to grasp, tiny and has a wordart logo </p>
 </div>
 
 # mehdux
@@ -10,6 +9,7 @@
 * Easy to grasp API
 * Tiny: 577 bytes gzipped
 * Small React and Preact integrations (~750 bytes gzipped)
+* WordArt logo
 
 ## Motivation
 
