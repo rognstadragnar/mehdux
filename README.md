@@ -31,27 +31,53 @@ const initialState = {
 }
 
 const actions = {
-  setName: state => value => ({
-      ...state,
-      someValue: value
-    })
-  }
+  // ...actions
 }
 
 const store = stateManager(initialState, actions)
 ```
 
+#### Creating and using actions
+The actions you create should be a function that takes the state and returns a function returning the new state.
+
+```Javascript
+const add = state => value => ({
+  ...state,
+  value: state.value + value
+})
+
+// or without arrow functions
+const subtract = function(state) {
+  return function(value) {
+    return {
+      ...state,
+      value: state.value - value
+    }
+  }
+}
+
+const actions = { increment, decrement }
+```
+`Mehdux` transforms the actions you pass the store.
+ Using the actions simply looks like this:
+
+```Javascript
+store.actions.add(10)
+store.actions.subtract(20)
+```
 ### Subscribe to state changes
 
 ```Javascript
-store.subscribe(console.log)
+store.connect(console.log)
 
 store.actions.setValue('A cooler value')
 // logs { someValue: 'A cooler Value' }
 ```
 
 ### Usage with other frameworks
+`Mehdux` has built-in integrations with `react` and `preact`.
 
+Simply import the `connect`-function, pass it the store you have already created and pass your component to the returning function.
 ```Javascript
 import { connect } from 'mehdux/react' // or 'mehdux/preact
 
@@ -62,7 +88,11 @@ export default connect(store)(SomeComponent)
 ```
 
 #### Listening to just certain parts of the state tree
+Often you only care about a few parts of your state tree in a component. By only passing in those properties you will improve the performance of your application.
 
+To achieve this you want to create a `mapActionsToProps`-function. This function gets passed the entire state and should return an object containing the properties you care about. Pass this as the second argument to the `connect`-function.
+
+Doing this is optional and you can pass in nothing or `null`, but it is strongly encouraged.
 ```Javascript
 import { connect } from 'mehdux/react' // or 'mehdux/preact
 
@@ -79,6 +109,9 @@ export default connect(store, mapStateToProps)(SomeComponent)
 ```
 
 #### Passing in certain actions
+Similarly you can use a `mapActionsToProps`-function to only pass the actions you care about to your component.
+
+This function gets passed all the actions in the store and should return an object containing the actions you care about. Pass this as the third argument to the `connect`-function.
 
 ```Javascript
 import { connect } from 'mehdux/react' // or 'mehdux/preact'
@@ -101,6 +134,11 @@ and the setName and setUpperCaseName functions
 ```
 
 #### Dispatching async thunk-like actions
+`Mehdux` has support for dispatching actions within actions.
+All actions you create also gets passed a `dispatch`-function.
+
+To dispatch simply pass the name of the action (the object property) as the first argument. Subsequent arguments gets passed to the action.
+
 
 ```Javascript
 const actions = {
