@@ -68,10 +68,24 @@ store.actions.subtract(20)
 ### Subscribe to state changes
 
 ```Javascript
-store.connect(console.log)
+// All state changes
+store.connect()(console.log)
 
 store.actions.setValue('A cooler value')
 // logs { someValue: 'A cooler Value' }
+
+```
+```Javascript
+// Some state changes
+
+const mapState = state => ({
+  interesting: state.something
+})
+store.connect(mapState)(console.log)
+
+store.actions.setSomething('This is interesting')
+// logs { interesting: 'This is interesting' }
+
 ```
 
 ### Usage with other frameworks
