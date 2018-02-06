@@ -66,6 +66,7 @@ store.actions.add(10)
 store.actions.subtract(20)
 ```
 ### Subscribe to state changes
+
 ```Javascript
 store.connect()(console.log)
 
