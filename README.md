@@ -66,21 +66,22 @@ store.actions.add(10)
 store.actions.subtract(20)
 ```
 ### Subscribe to state changes
-
 ```Javascript
-// All state changes
 store.connect()(console.log)
 
 store.actions.setValue('A cooler value')
 // logs { someValue: 'A cooler Value' }
 
 ```
+
+To subscribe to changes in certain parts of the state tree you can pass a function as the first argument to the `connect`-function. This is similiar to how you map state to props in `react-redux`.
+
 ```Javascript
-// Some state changes
 
 const mapState = state => ({
   interesting: state.something
 })
+
 store.connect(mapState)(console.log)
 
 store.actions.setSomething('This is interesting')
