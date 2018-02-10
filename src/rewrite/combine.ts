@@ -1,4 +1,4 @@
-import { Store }  from './main'
+import { Store } from './main'
 import { isDifferent } from '../lib/diff'
 
 import {
@@ -19,8 +19,8 @@ const store = new Store()
 
 function combine(stores) {
   const storeNames = Object.keys(stores)
-  const stateObj = {} 
-  const actionObj = {} 
+  const stateObj = {}
+  const actionObj = {}
   storeNames.forEach(storeName => {
     if (stores[storeName] instanceof Store) {
       stateObj[storeName] = stores[storeName].getState()
@@ -28,7 +28,7 @@ function combine(stores) {
     }
     // warn if in development
   })
-  return new createCombinedStore(stateObj, { ...actionObj})
+  return new createCombinedStore(stateObj, { ...actionObj })
 }
 
 function createCombinedStore(initialState, initialActions) {
@@ -41,49 +41,55 @@ function createCombinedStore(initialState, initialActions) {
     setState
   )
 
-  function emit (state, actions): void { 
-    connections.forEach(con => {      
+  function emit(state, actions): void {
+    connections.forEach(con => {
       con(state, actions)
     })
   }
   function setState(newState: State): void {
-    
-      if (newState !== undefined && isDifferent(state, newState)) {
-
-        state = newState
-        emit(getState(), actions)
-      }
+    if (newState !== undefined && isDifferent(state, newState)) {
+      state = newState
+      emit(getState(), actions)
     }
+  }
 
   function dispatch(name: string, ...args: Array<any>): void {
+    if (name.indexOf('/')) {
+      const split = name.split('.')
+      if (typeof actions[split[0]][split[1]] === 'function') {
+        actions[split[0]][split[1]](...args)
+      }
+    }
     if (typeof actions[name] === 'function') actions[name](...args)
   }
 
-  function dispose (connection: Connection): void {
+  function dispose(connection: Connection): void {
     connections = connections.filter(c => c !== connection)
   }
 
-  function getState (mapStateToProps?: MapStateToProps) {
+  function getState(mapStateToProps?: MapStateToProps) {
     return mapStateToProps ? mapStateToProps(state) : state
   }
-  
-  function getActions (mapActionsToProps?: MapActionsToProps) {
+
+  function getActions(mapActionsToProps?: MapActionsToProps) {
     return mapActionsToProps ? mapActionsToProps(actions) : actions
   }
 
   this.actions = actions
   this.getState = getState
+  this.getActions = getActions
   this.setState = setState
   this.connect = (
-    mapStateToProps: MapStateToProps = null, 
-    mapActionsToProps: MapActionsToProps = null
+    mapStateToProps: MapStateToProps = null,
+    mapActionsToProps: MapActionsToProps = null,
+    force: boolean = false
   ) => {
     let prevState = mapStateToProps ? mapStateToProps(state) : state
     return (consumer: Consumer): Dispose => {
       const connection = (state: State, actions: ParsedActions): void => {
         const currentState = getState(mapStateToProps)
-        
-        if (isDifferent(prevState, currentState)) {
+
+        if (force || isDifferent(prevState, currentState)) {
           prevState = currentState
           consumer(currentState, getActions(mapActionsToProps))
         }
@@ -94,17 +100,17 @@ function createCombinedStore(initialState, initialActions) {
       }
     }
   }
- 
+
 }
 
-const mapObj = (stateKey, root, transformFn) => {  
+const mapObj = (stateKey, root, transformFn) => {
   const o = {}
   for (let key in root) o[key] = transformFn(stateKey, root[key])
   return o
 }
 
 const createNestedActions = (actions, getState, dispatch, setState) => {
-  const transformFn = (stateKey, action) => { 
+  const transformFn = (stateKey, action) => {
     return (...args) => {
       const currentState = getState()
       setState({
@@ -117,7 +123,7 @@ const createNestedActions = (actions, getState, dispatch, setState) => {
   }
 
   const rtnObj = {}
-  for (let key in actions) {
+  for (let key in actions) {
     rtnObj[key] = mapObj(key, actions[key], transformFn)
   }
   return rtnObj

@@ -17,7 +17,7 @@ import {
 
 
 
-function Store(initialState: State = {}, initialActions: Actions = {}) {
+function Store(initialState: State = {}, initialActions: Actions = {}) {
   let connections: Array<Connection> = []
   let state: State = initialState
   let actions: ParsedActions = createActions(
@@ -27,7 +27,7 @@ function Store(initialState: State = {}, initialActions: Actions = {}) {
     setState
   )
 
-  function emit (): void { connections.forEach(con => con(state, actions)) }
+  function emit(): void { connections.forEach(con => con(state, actions)) }
   function setState(newState: State): void {
     if (newState !== undefined && isDifferent(state, newState)) {
       state = newState
@@ -39,41 +39,45 @@ function Store(initialState: State = {}, initialActions: Actions = {}) {
     if (typeof actions[name] === 'function') actions[name](...args)
   }
 
-  function dispose (connection: Connection): void {
+  function dispose(connection: Connection): void {
     connections = connections.filter(c => c !== connection)
   }
 
-  function getState (mapStateToProps?: MapStateToProps) {
+  function getState(mapStateToProps?: MapStateToProps) {
     return mapStateToProps ? mapStateToProps(state) : state
   }
-  
-  function getActions (mapActionsToProps?: MapActionsToProps) {
+
+  function getActions(mapActionsToProps?: MapActionsToProps) {
     return mapActionsToProps ? mapActionsToProps(actions) : actions
   }
   this.__INITIAL_ACTIONS__ = initialActions
   this.actions = actions
   this.getState = getState
   this.setState = setState
+  this.getActions = getActions
   this.connect = (
-    mapStateToProps: MapStateToProps = null, 
-    mapActionsToProps: MapActionsToProps = null
+    mapStateToProps: MapStateToProps = null,
+    mapActionsToProps: MapActionsToProps = null,
+    force: boolean = false
   ) => {
-    let prevState = mapStateToProps ? mapStateToProps(state) : state
+    let prevState = getState(mapStateToProps)
     return (consumer: Consumer): Dispose => {
       const connection = (state: State, actions: ParsedActions): void => {
         const currentState = getState(mapStateToProps)
-        if (isDifferent(prevState, currentState)) {
+        if (force || isDifferent(prevState, currentState)) {
           prevState = currentState
           consumer(currentState, getActions(mapActionsToProps))
         }
       }
+      consumer(prevState, getActions(mapActionsToProps))
+
       connections.push(connection)
       return {
         dispose: () => { dispose(connection) }
       }
     }
   }
- 
+
 }
 
-export { Store, combine }
+export { Store }

@@ -24,3 +24,5 @@ export type MapStateToProps = (state: State) => State | undefined
 export type MapActionsToProps = (
   actions: ParsedActions
 ) => ParsedActions | undefined
+
+export type Store = (mapState: MapStateToProps, mapActions: MapActionsToProps) => any

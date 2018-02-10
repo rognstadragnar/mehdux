@@ -10,77 +10,73 @@ import {
   Dispose,
   ParsedAction,
   ParsedActions,
-  InitialState,
   MapStateToProps,
   MapActionsToProps
 } from './types.d'
 
-const createState = (
-  initialState: State = {},
-  initialActions: Actions = {}
-) => {
-  let state = initialState
-  let connections: Array<Function> = []
 
-  const emit = () => connections.forEach(c => c(state, actions))
 
-  const getState = mapStateToProps =>
-    mapStateToProps ? mapStateToProps(state) : state
-
-  const getActions = mapDispatchToProps =>
-    mapDispatchToProps ? mapDispatchToProps(actions) : actions
-
-  const setState = (newState: State): void => {
-    if (newState !== undefined && isDifferent(state, newState)) {
-      state = newState
-      emit()
-    }
-  }
-
-  const actions: ParsedActions = createActions(
+function Store(initialState: State = {}, initialActions: Actions = {}) {
+  let connections: Array<Connection> = []
+  let state: State = initialState
+  let actions: ParsedActions = createActions(
     initialActions,
     getState,
     dispatch,
     setState
   )
 
-  function dispatch(actionType: string, ...args: Array<any>): void {
-    if (actions[actionType]) actions[actionType](...args)
+  function emit(): void { connections.forEach(con => con(state, actions)) }
+  function setState(newState: State): void {
+    if (newState !== undefined && isDifferent(state, newState)) {
+      state = newState
+      emit()
+    }
   }
 
-  const dispose = (connection: Connection): void => {
+  function dispatch(name: string, ...args: Array<any>): void {
+    if (typeof actions[name] === 'function') actions[name](...args)
+  }
+
+  function dispose(connection: Connection): void {
     connections = connections.filter(c => c !== connection)
   }
 
-  return {
-    getState,
-    getActions,
-    actions,
-    connect: (
-      mapStateToProps?: MapStateToProps,
-      mapActionsToProps?: MapActionsToProps
-    ) => {
-      let prevRes = mapStateToProps ? mapStateToProps(state) : state
-      return (consumer: Consumer): Dispose => {
-        const connection = (state: State, actions: ParsedActions): void => {
-          const currentRes = getState(mapStateToProps)
-          if (isDifferent(prevRes, currentRes)) {
-            prevRes = currentRes
-            consumer(
-              Object.assign({}, currentRes, getActions(mapActionsToProps))
-            )
-          }
+  function getState(mapStateToProps?: MapStateToProps) {
+    return mapStateToProps ? mapStateToProps(state) : state
+  }
+
+  function getActions(mapActionsToProps?: MapActionsToProps) {
+    return mapActionsToProps ? mapActionsToProps(actions) : actions
+  }
+  this.__INITIAL_ACTIONS__ = initialActions
+  this.actions = actions
+  this.getState = getState
+  this.setState = setState
+  this.getActions = getActions
+  this.connect = (
+    mapStateToProps: MapStateToProps = null,
+    mapActionsToProps: MapActionsToProps = null,
+    force: boolean = false
+  ) => {
+    let prevState = getState(mapStateToProps)
+    return (consumer: Consumer): Dispose => {
+      const connection = (state: State, actions: ParsedActions): void => {
+        const currentState = getState(mapStateToProps)
+        if (force || isDifferent(prevState, currentState)) {
+          prevState = currentState
+          consumer(currentState, getActions(mapActionsToProps))
         }
-        connections.push(connection)
-        return {
-          dispose: () => {
-            dispose(connection)
-          }
-        }
+      }
+      consumer(prevState, getActions(mapActionsToProps))
+
+      connections.push(connection)
+      return {
+        dispose: () => { dispose(connection) }
       }
     }
   }
+
 }
 
-const stateManager = createState
-export { createState, stateManager }
+export { Store }
