@@ -5,7 +5,7 @@
   "repository": "rognstadragnar/mehdux",
   "license": "MIT",
   "version": "0.2.19",
-  "source": "src/main.ts",
+  "source": "src/rewrite/main.ts",
   "main": "dist/mehdux.js",
   "module": "dist/mehdux.esm.js",
   "browser": "dist/mehdux.umd.js",
@@ -22,6 +22,7 @@
   "scripts": {
     "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
+    "dev:main": "microbundle watch",
     "bundle:preact": "microbundle src/preact.ts -o ./preact.js -f cjs",
     "bundle:react": "microbundle src/react.ts -o ./react.js -f cjs",
     "prepare": "npm run build",

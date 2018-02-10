@@ -26,11 +26,11 @@ function compareObj(a: object, b: object, compareFn: CompareFn): boolean {
   const aKeys = Object.keys(a)
   const bKeys = Object.keys(b)
   if (aKeys.length !== bKeys.length) return true
-  return (
-    aKeys.filter(
-      (key, idx) => (key === bKeys[idx] ? compareFn(a[key], b[key]) : false)
+
+  return aKeys.filter(
+      (key, idx) => (key === bKeys[idx] ? compareFn(a[key], b[key]) : true)
     ).length !== 0
-  )
+  
 }
 
 export { isDifferent }

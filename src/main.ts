@@ -13,7 +13,7 @@ import {
   InitialState,
   MapStateToProps,
   MapActionsToProps
-} from './types'
+} from './types.d'
 
 const createState = (
   initialState: State = {},

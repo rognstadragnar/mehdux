@@ -7,12 +7,11 @@ export const connect = (store, mapStateToProps, mapDispatchToProps) => {
         super()
         this.connection = null
         this.handleUpdate = this.handleUpdate.bind(this)
-        this.state =
-          Object.assign(
-            {},
-            store.getState(mapStateToProps),
-            store.getActions(mapDispatchToProps)
-          )
+        this.state = {
+          actions: store.getActions(mapDispatchToProps),
+          state: tore.getState(mapStateToProps)
+        }
+          
       }
 
 
