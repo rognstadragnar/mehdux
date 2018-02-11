@@ -1,5 +1,5 @@
-import { isDifferent } from './lib/diff'
-import { createActions } from './lib/helpers'
+import { isDifferent } from './lib/diff.ts'
+import { createActions } from './lib/helpers.ts'
 
 import {
   State,
@@ -11,22 +11,18 @@ import {
   ParsedAction,
   ParsedActions,
   MapStateToProps,
-  MapActionsToProps
-} from './types.d'
-
-
+  MapActionsToProps,
+  StoreInstance
+} from './types.ts'
 
 function Store(initialState: State = {}, initialActions: Actions = {}) {
   let connections: Array<Connection> = []
   let state: State = initialState
-  let actions: ParsedActions = createActions(
-    initialActions,
-    getState,
-    dispatch,
-    setState
-  )
+  let actions: ParsedActions = createActions(initialActions, getState, dispatch, setState)
 
-  function emit(): void { connections.forEach(con => con(state, actions)) }
+  function emit(): void {
+    connections.forEach(con => con(state, actions))
+  }
   function setState(newState: State): void {
     if (newState !== undefined && isDifferent(state, newState)) {
       state = newState
@@ -72,11 +68,12 @@ function Store(initialState: State = {}, initialActions: Actions = {}) {
 
       connections.push(connection)
       return {
-        dispose: () => { dispose(connection) }
+        dispose: () => {
+          dispose(connection)
+        }
       }
     }
   }
-
 }
 
 export { Store }

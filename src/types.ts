@@ -6,10 +6,7 @@ export type SetState = (State) => void
 export type Consumer = (State, ParsedActions) => any
 export type Connection = (state: State, actions: ParsedActions) => void
 export type Dispose = { dispose: () => void }
-export type Action = (
-  state: State,
-  dispatch: Dispatch
-) => (...args: Array<any>) => State
+export type Action = (state: State, dispatch: Dispatch) => (...args: Array<any>) => State
 
 export type Actions = {
   [propName: string]: Action
@@ -21,8 +18,18 @@ export type ParsedActions = {
 export type InitialState = State
 
 export type MapStateToProps = (state: State) => State | undefined
-export type MapActionsToProps = (
-  actions: ParsedActions
-) => ParsedActions | undefined
+export type MapActionsToProps = (actions: ParsedActions) => ParsedActions | undefined
 
 export type Store = (mapState: MapStateToProps, mapActions: MapActionsToProps) => any
+
+export interface StoreInstance {
+  connect: Connect
+  getState: (m: MapStateToProps) => State
+  getActions: (a: MapActionsToProps) => ParsedActions
+}
+
+type Connect = (
+  s?: MapStateToProps,
+  a?: MapActionsToProps,
+  force?: boolean
+) => (Function) => { dispose: () => void }

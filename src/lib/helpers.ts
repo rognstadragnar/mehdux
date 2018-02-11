@@ -1,13 +1,5 @@
-import { ParsedAction } from './../types'
-import {
-  Dispatch,
-  SetState,
-  GetState,
-  Actions,
-  ParsedActions,
-  Action,
-  State
-} from '../types'
+import { ParsedAction } from './../types.ts'
+import { Dispatch, SetState, GetState, Actions, ParsedActions, Action, State } from '../types'
 
 const mapObj = (r: object, fn: (v: Action) => ParsedAction): ParsedActions => {
   const o: ParsedActions = {}
