@@ -30,8 +30,8 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
       componentDidMount() {
         this.connection = this.store.connect(mapStateToProps, mapActionsToProps)(this.handleUpdate)
       }
-      handleUpdate(state) {
-        this.setState(Object.assign({}, state))
+      handleUpdate(state, actions) {
+        this.setState(Object.assign({}, { state, actions }))
       }
       componentWillUnmount() {
         this.connection && this.connection.dispose()

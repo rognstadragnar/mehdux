@@ -33,3 +33,12 @@ type Connect = (
   a?: MapActionsToProps,
   force?: boolean
 ) => (Function) => { dispose: () => void }
+
+export interface EnhancerArg {
+  name: string
+  args: Array<any>
+  currentState: State
+  newState: State
+}
+type Enhancer = (arg: EnhancerArg) => void
+export type Enhancers = Array<Enhancer>

@@ -10,10 +10,14 @@ const createActions = (
   actions: Actions,
   getState: GetState,
   dispatch: Dispatch,
-  setState: SetState
+  setState: SetState,
+  enhance: (...args) => void
 ): ParsedActions => {
   const returnFn = (fn: Action) => (...args: Array<any>): void => {
-    return setState(fn(getState(), dispatch)(...args))
+    const currentState = getState()
+    const newState = fn(currentState, dispatch)(...args)
+    setState(newState)
+    enhance({ name: fn.name, args, currentState, newState, lol: newState })
   }
   return mapObj(actions, returnFn)
 }

@@ -1,5 +1,5 @@
-import { isDifferent } from './lib/diff.ts'
-import { createActions } from './lib/helpers.ts'
+import { isDifferent } from './lib/diff'
+import { createActions } from './lib/helpers'
 
 import {
   State,
@@ -12,14 +12,18 @@ import {
   ParsedActions,
   MapStateToProps,
   MapActionsToProps,
-  StoreInstance
-} from './types.ts'
+  StoreInstance,
+  EnhancerArg,
+  Enhancers
+} from './types'
 
-function Store(initialState: State = {}, initialActions: Actions = {}) {
+function Store(initialState: State = {}, initialActions: Actions = {}, enhancers: Enhancers = []) {
   let connections: Array<Connection> = []
   let state: State = initialState
-  let actions: ParsedActions = createActions(initialActions, getState, dispatch, setState)
-
+  let actions: ParsedActions = createActions(initialActions, getState, dispatch, setState, enhance)
+  function enhance(info: EnhancerArg) {
+    enhancers.forEach(enhancer => enhancer(info))
+  }
   function emit(): void {
     connections.forEach(con => con(state, actions))
   }
