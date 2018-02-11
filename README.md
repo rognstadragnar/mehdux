@@ -7,9 +7,10 @@
 > Just another tiny, simple state machine
 
 * Easy to grasp API
-* Tiny: 577 bytes gzipped
-* Small React and Preact integrations (~750 bytes gzipped)
+* Tiny, small, slim, light, slender, fit – bytes matter
+* Small React, Preact and Picodom integrations (~750 bytes gzipped)
 * WordArt logo
+* Emojis in README.md (Todo)
 
 ## Motivation
 
@@ -27,150 +28,260 @@ npm install mehdux
 import { stateManager } from 'mehdux'
 
 const initialState = {
-  someValue: 'My value'
+  value: 0
 }
 
 const actions = {
-  // ...actions
+  // ...
 }
 
 const store = stateManager(initialState, actions)
 ```
 
 #### Creating and using actions
+
 The actions you create should be a function that takes the state and returns a function returning the new state.
 
 ```Javascript
-const add = state => value => ({
-  ...state,
-  value: state.value + value
-})
-
-// or without arrow functions
-const subtract = function(state) {
-  return function(value) {
-    return {
-      ...state,
-      value: state.value - value
-    }
-  }
+const actions = {
+  inc: state => value => ({
+    ...state,
+    value: state.value + value
+  }),
+  dec: state => value => ({
+    ...state,
+    value: state.value - value
+  })
 }
-
-const actions = { increment, decrement }
 ```
+
 `Mehdux` transforms the actions you pass the store.
- Using the actions simply looks like this:
+Using the actions simply looks like this:
 
 ```Javascript
-store.actions.add(10)
-store.actions.subtract(20)
+store.actions.inc(1)
 ```
+
 ### Subscribe to state changes
+
+To subscribe to state changes you use the `connect`-function on the `store` instance you have already created.
+
+On a state change the subscriber gets invoked with the state tree as the first argument and the actions as the second argument.
 
 ```Javascript
 store.connect()(console.log)
 
-store.actions.setValue('A cooler value')
-// logs { someValue: 'A cooler Value' }
-
+store.actions.inc(10)
+// logs { value: 10 }, { inc: f(), dec: f() }
 ```
 
 To subscribe to changes in certain parts of the state tree you can pass a function as the first argument to the `connect`-function. This is similiar to how you map state to props in `react-redux`.
 
 ```Javascript
-
-const mapState = state => ({
-  interesting: state.something
+const mapStateToProps = ({ something, somethingElse }) => ({
+  something,
+  somethingElse
 })
 
-store.connect(mapState)(console.log)
-
-store.actions.setSomething('This is interesting')
-// logs { interesting: 'This is interesting' }
-
+store.connect(mapStateToProps)(console.log)
 ```
 
-### Usage with other frameworks
-`Mehdux` has built-in integrations with `react` and `preact`.
+Similiarly you can pass in a `mapActionsToProps`-function as the second argument to the `connect`-function.
 
-Simply import the `connect`-function, pass it the store you have already created and pass your component to the returning function.
 ```Javascript
-import { connect } from 'mehdux/react' // or 'mehdux/preact
+const mapActionsToProps = actions => ({
+  inc: actions.inc,
+  increaseByTen: () => actions.inc(10),
+})
 
-const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
-
-export default connect(store)(SomeComponent)
-// Some component has access the whole state and all the actions in the store
+store.connect(null, mapActionsToProps)(console.log)
 ```
 
-#### Listening to just certain parts of the state tree
-Often you only care about a few parts of your state tree in a component. By only passing in those properties you will improve the performance of your application.
+Passing `null` as either the first or second argument passes the state or the actions object in its entirety.
 
-To achieve this you want to create a `mapActionsToProps`-function. This function gets passed the entire state and should return an object containing the properties you care about. Pass this as the second argument to the `connect`-function.
+## Usage with other frameworks
 
-Doing this is optional and you can pass in nothing or `null`, but it is strongly encouraged.
-```Javascript
-import { connect } from 'mehdux/react' // or 'mehdux/preact
+`Mehdux` has built-in integrations with `react`, `preact` and `picodom`.
 
-const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
+### React and Preact
 
-function mapStateToProps(state) {
-  return {
-    myValue: state.something.i.care.about
-  }
-}
-
-export default connect(store, mapStateToProps)(SomeComponent)
-// Some component has access to myValue and all the actions in the store
-```
-
-#### Passing in certain actions
-Similarly you can use a `mapActionsToProps`-function to only pass the actions you care about to your component.
-
-This function gets passed all the actions in the store and should return an object containing the actions you care about. Pass this as the third argument to the `connect`-function.
+To connect a component to the store you need to wrap the component in the `connect`-function from `mehdux`.
 
 ```Javascript
 import { connect } from 'mehdux/react' // or 'mehdux/preact'
-
-const SomeComponent = ({ myValue }) => <h1>{myValue}</h1>
-
-function mapActionsToProps(actions) {
-  return {
-    setName: actions.setName,
-    setUpperCaseName: (value) => actions.setName(value.toUpperCase())
-  }
-}
-
-export default connect(store, null, mapActionsToProps)(SomeComponent)
-
-/*
-Some component has access to the whole state tree
-and the setName and setUpperCaseName functions
-*/
 ```
 
-#### Dispatching async thunk-like actions
+There are two ways to pass the store to the `connect`-function in `mehdux`:
+
+1. By wrapping your app in a higher order `provider`-function like, similiar to how `react-redux` does it.
+2. Passing the store as the first argument to the `connect`-function.
+
+#### 1. By using a Provider
+
+```Javascript
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider, connect } from 'mehdux/react' // or 'mehdux/preact'
+import { store } from './store' // or wherever you keep your store instance
+
+
+const Button = ({ state, actions }) => {
+  return <button onClick={actions.inc}>{state.value}</button>
+}
+
+const ConnectedButton = connect()(Button)
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedButton />
+  </Provider>,
+  document.getElementById('root')
+)
+```
+
+#### 2. By passing in the store instance
+
+```Javascript
+import { connect } from 'mehdux/react' // or 'mehdux/preact'
+import { store } from './store' // or wherever you keep your store instance
+
+
+const Button = ({ state, actions }) => {
+  return <button onClick={actions.inc}>{state.value}</button>
+}
+
+const ConnectedButton = connect(store)(Button)
+```
+
+**Note:** _When doing this, `mapStateToProps` and `mapActionsToProps` are passed as the second and third arguments, not the first and the second like usual_
+
+### Picodom
+
+`Mehdux` exports a tiny, small, slender, light, fit `connect`-function for easy stateful components in Picodom.
+
+#### Regular usagage
+
+A typical Picodom and Mehdux app might look like this:
+
+```Javascript
+// @jsx h
+import { h, patch } from 'picodom'
+import { store } from './store' // or wherever you keep your store instance
+
+let node = null
+
+const render = viewFn => (state, actions) => {
+  patch(node, (node = viewFn(state, actions)), root);
+};
+
+const view = (state, actions) => {
+  return <button onClick={actions.inc}>{state.value}</button>
+}
+
+store.connect()(render(view))
+```
+
+Out of the box stateful components connected to a store is not straight-forward with `Picodom`.
+To make connected components in `Picodom` a breeze `Mehdux` comes with a small `connect`-function.
+
+Here is how to do it:
+
+```Javascript
+// @jsx h
+import { h, patch } from 'picodom'
+import { connect } from 'mehdux/picodom'
+import { store } from './store' // or wherever you keep your store instance
+
+let node = null
+
+// Note the storeInstance that gets passed to 'render' from 'store.connect'
+const render = viewFn => (state, actions, storeInstance) => {
+  patch(node, (node = viewFn(state, actions, storeInstance)), root);
+};
+
+const Button = ({ actions, state }) => {
+  return <button onClick={actions.inc}>{state.value}</button>
+}
+
+const ConnectedButton = connect()(Button)
+
+const view = (state, actions, storeInstance) => {
+  return (
+    <div>
+      <ConnectedButton store={storeInstance} />
+    </div>
+  )
+}
+
+// Note the third argument to connect, which forces the store to emit even on equal states.
+// This is to enable the stateful components inside `view` to get rerun,
+// eventhough the parent state does not change.
+
+store.connect(null, null, true)(render(view))
+```
+
+**Note:** _This implementation will likely be rewritten to be more similiar to the `React`/`Preact`-implementations_
+
+## Advanced usage
+
+### Dispatching multiple or async actions
+
 `Mehdux` has support for dispatching actions within actions.
 All actions you create also gets passed a `dispatch`-function.
 
 To dispatch simply pass the name of the action (the object property) as the first argument. Subsequent arguments gets passed to the action.
 
-
 ```Javascript
 const actions = {
-  setName: state => {
-    return value => ({
-      ...state,
-      someValue: value
-    })
+  addUser: state => user => ({
+    ...state,
+    user: [...state.users, user]
+  }),
+  addManyUsers: state => () => {
+    dispatch('addUser', 'Kari')
+    dispatch('addUser', 'Ola')
+  },
+  addUserIn2s: (state, disaptch) => user => {
+    setTimeout(() => dispatch('addUser', user), 2000)
   },
   fetchAndSetName: async (state, dispatch) => {
     const res = await fetch('https://myapi.com/v0')
-    const data = await res.json()
-    dispatch('setName', data.name)
+    const user = await res.json()
+    dispatch('addUser', user)
   }
 }
 ```
+
+### Combining multiple store instances (WIP)
+
+Bigger apps often have complex state trees. In `redux` you would handle this by combining reducers. With `Mehdux` you can combine stores with the `combineStores`-function like so:
+
+```Javascript
+import { combineStores } from 'mehdux/combine'
+
+const store = combineStores({ users: userStore, posts: postStore })
+```
+
+### Middleware/Enhancers
+
+`Store` takes a third argument along side `initialState` and `actions`. This is an array of middleware-functions. Each middleware gets called on actions being called on the store.
+
+They recieve the action `name`, `arguments`, `currentState` and `nextState`.
+
+Logging and analytics are examples of middleware usages.
+
+```Javascript
+import { Store } from 'mehdux'
+import { Logger, Analytics } from './middlewares' // or wherever you keep your middlewares
+
+const store = new Store({}, {}, [Logger, Analytics])
+
+export { store }
+```
+
+## Todos
+
+* Sort out type-definitions when using `microbundle`
 
 ## License
 
