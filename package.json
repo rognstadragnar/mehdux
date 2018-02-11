@@ -4,7 +4,7 @@
   "author": "Ragnar Rognstad (http://rognstad.me)",
   "repository": "rognstadragnar/mehdux",
   "license": "MIT",
-  "version": "0.2.19",
+  "version": "0.3.0",
   "source": "src/main.ts",
   "main": "dist/mehdux.js",
   "module": "dist/mehdux.esm.js",
@@ -20,8 +20,7 @@
     "react": "*"
   },
   "scripts": {
-    "release":
-      "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
     "dev:main": "microbundle watch",
     "bundle:combine": "microbundle src/combine.ts -o ./combine.js -f cjs",
@@ -29,8 +28,7 @@
     "bundle:preact": "microbundle src/bindings/preact.js -o ./preact.js -f cjs",
     "bundle:react": "microbundle src/bindings/react.js -o ./react.js -f cjs",
     "prepare": "npm run build",
-    "build":
-      "npm run bundle:main && npm run bundle:combine && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
+    "build": "npm run bundle:main && npm run bundle:combine && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
     "test": "echo 'should add some tests.. :)'"
   },
   "files": [
