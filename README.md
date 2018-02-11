@@ -7,10 +7,10 @@
 > Just another tiny, simple state machine
 
 * Easy to grasp API
-* Tiny, small, slim, light, slender, fit – bytes matter
-* Small React, Preact and Picodom integrations (~750 bytes gzipped)
+* 686 bytes: Tiny, small, slim, light, slender, fit
+* Small React (538 bytes), Preact (457 bytes) and Picodom (210 bytes) integrations
 * WordArt logo
-* Emojis in README.md (Todo)
+* Emojis in README.md (Todo !important)
 
 ## Motivation
 
@@ -281,6 +281,7 @@ export { store }
 
 ## Todos
 
+* Emojis in README.md (Todo !important)
 * Sort out type-definitions when using `microbundle`
 
 ## License
