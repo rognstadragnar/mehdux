@@ -25,7 +25,7 @@ npm install mehdux
 ### Initializing mehdux
 
 ```Javascript
-import { store } from 'mehdux'
+import { Store } from 'mehdux'
 
 const initialState = {
   value: 0
