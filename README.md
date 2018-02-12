@@ -25,7 +25,7 @@ npm install mehdux
 ### Initializing mehdux
 
 ```Javascript
-import { stateManager } from 'mehdux'
+import { store } from 'mehdux'
 
 const initialState = {
   value: 0
@@ -35,7 +35,7 @@ const actions = {
   // ...
 }
 
-const store = stateManager(initialState, actions)
+const store = new Store(initialState, actions)
 ```
 
 #### Creating and using actions
