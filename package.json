@@ -22,7 +22,7 @@
   "scripts": {
     "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
-    "dev:main": "microbundle watch",
+    "dev:main": "microbundle watch --compress false",
     "bundle:combine": "microbundle src/combine.ts -o ./combine.js -f cjs",
     "bundle:picodom": "microbundle src/bindings/picodom.ts -o ./picodom.js -f cjs",
     "bundle:preact": "microbundle src/bindings/preact.js -o ./preact.js -f cjs",

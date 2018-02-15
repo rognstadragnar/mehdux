@@ -13,36 +13,41 @@ import {
   MapStateToProps,
   MapActionsToProps,
   StoreInstance,
-  EnhancerArg,
-  Enhancers
+  MiddlewareArg,
+  Middleware,
+  Middlewares,
+  ExtraSetStateArgs
 } from './types'
 
-function Store(initialState: State = {}, initialActions: Actions = {}, enhancers: Enhancers = []) {
+function Store(initialState: State = {}, initialActions: Actions = {}, middlewares: Middlewares = []) {
   let connections: Array<Connection> = []
   let state: State = initialState
-  let actions: ParsedActions = createActions(initialActions, getState, dispatch, setState, enhance)
-  function enhance(info: EnhancerArg) {
-    enhancers.forEach(enhancer => enhancer(info))
-  }
+  let actions: ParsedActions = createActions(initialActions, getState, dispatch, setState)
+
   function emit(): void {
     connections.forEach(con => con(state, actions))
   }
-  function setState(newState: State): void {
+
+  function setState(newState: State, extras: ExtraSetStateArgs = {} ): void {
     if (newState !== undefined && isDifferent(state, newState)) {
-      state = newState
+      state = middlewares.reduce((pv, cv) => {
+        return cv(pv, { oldState: getState(), name: extras.name, args: extras.args /* dispatch could also be used here, but not a good idea beofre some refactor */ })
+      }, newState)
       emit()
     }
   }
 
   function dispatch(name: string, ...args: Array<any>): void {
-    if (typeof actions[name] === 'function') actions[name](...args)
+    if (typeof actions[name] === 'function') {
+      actions[name](...args)
+    }
   }
 
   function dispose(connection: Connection): void {
     connections = connections.filter(c => c !== connection)
   }
 
-  function getState(mapStateToProps?: MapStateToProps) {
+  function getState(mapStateToProps?: MapStateToProps) {    
     return mapStateToProps ? mapStateToProps(state) : state
   }
 

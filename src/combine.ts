@@ -12,7 +12,7 @@ import {
   ParsedActions,
   MapStateToProps,
   MapActionsToProps
-} from './types.d'
+} from './types'
 
 
 const store = new Store()

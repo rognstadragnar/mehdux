@@ -2,7 +2,12 @@ import { MapStateToProps } from './types'
 export type Dispatch = (actionName: string, ...args: Array<any>) => void
 export type State = object
 export type GetState = (MapStateToProps?) => object
-export type SetState = (State) => void
+export type SetState = (state: State, extraArgs?: ExtraSetStateArgs) => void
+export type ExtraSetStateArgs = {
+  oldState?: State,
+  args?: any[],
+  name?: string
+}
 export type Consumer = (State, ParsedActions) => any
 export type Connection = (state: State, actions: ParsedActions) => void
 export type Dispose = { dispose: () => void }
@@ -34,11 +39,12 @@ type Connect = (
   force?: boolean
 ) => (Function) => { dispose: () => void }
 
-export interface EnhancerArg {
-  name: string
-  args: Array<any>
-  currentState: State
-  newState: State
+export interface MiddlewareArg {
+  name?: string
+  args?: Array<any>
+  oldState: State,
+  dispatch?: Dispatch
 }
-type Enhancer = (arg: EnhancerArg) => void
-export type Enhancers = Array<Enhancer>
+
+export type Middleware = (newState: State, arg: MiddlewareArg) => State
+export type Middlewares = Array<Middleware>
