@@ -31,7 +31,7 @@ export const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
       }
       render() {
         return h(WrappedComponent, 
-          Object.assign({},this.state, this.props})
+          Object.assign({}, this.state, this.props))
       }
     }
   }

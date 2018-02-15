@@ -38,7 +38,7 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
       }
       render() {
         return createElement(WrappedComponent, 
-          Object.assign(({}, this.state, this.props))
+          Object.assign({}, this.state, this.props))
       }
     }
     Wrapper.contextTypes = {
