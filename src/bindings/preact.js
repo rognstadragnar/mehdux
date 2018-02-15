@@ -30,7 +30,8 @@ export const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
         this.connection && this.connection.dispose()
       }
       render() {
-        return h(WrappedComponent, this.state)
+        return h(WrappedComponent, 
+          Object.assign({},this.state, this.props})
       }
     }
   }
