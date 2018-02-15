@@ -7,7 +7,6 @@ function isDifferent(a: any, b: any): boolean {
   if (typeof a !== typeof b) return true
   if (Array.isArray(a)) return compareArray(a, b, isDifferent)
   if (typeof a === 'object') return compareObj(a, b, isDifferent)
-  if (!a && !b) return typeof a === typeof b
   return true
 }
 

@@ -24,6 +24,8 @@
     "bundle:main": "microbundle",
     "dev:main": "microbundle watch --compress false",
     "bundle:combine": "microbundle src/combine.ts -o ./combine.js -f cjs",
+    "dev:combine": "microbundle watch src/combine.ts -o ./combine.js -f cjs --compress false",
+
     "bundle:picodom": "microbundle src/bindings/picodom.ts -o ./picodom.js -f cjs",
     "bundle:preact": "microbundle src/bindings/preact.js -o ./preact.js -f cjs",
     "bundle:react": "microbundle src/bindings/react.js -o ./react.js -f cjs",

@@ -1,6 +1,7 @@
 import { Store } from './main'
 import { isDifferent } from './lib/diff'
-
+import { assembleStore } from './utils/assembleStore'
+import { createNestedActions } from './lib/helpers'
 import {
   State,
   Action,
@@ -15,23 +16,27 @@ import {
 } from './types'
 
 
-const store = new Store()
+const store = new Store({}, {})
 
-function combineStores(stores) {
+function combineStores(stores, middlewares) {
+
   const storeNames = Object.keys(stores)
   const stateObj = {}
   const actionObj = {}
   storeNames.forEach(storeName => {
-    if (stores[storeName] instanceof Store) {
+    if (stores[storeName]) {
       stateObj[storeName] = stores[storeName].getState()
       actionObj[storeName] = stores[storeName].__INITIAL_ACTIONS__
     }
     // warn if in development
-  })
-  return new createCombinedStore(stateObj, { ...actionObj })
+  })  
+  return new createCombinedStore(stateObj, actionObj, middlewares)
 }
 
+const createCombinedStore = assembleStore(createNestedActions)
+/* 
 function createCombinedStore(initialState, initialActions) {
+  
   let connections: Array<Connection> = []
   let state = initialState
   let actions: ParsedActions = createNestedActions(
@@ -100,33 +105,13 @@ function createCombinedStore(initialState, initialActions) {
       }
     }
   }
-
 }
 
-const mapObj = (stateKey, root, transformFn) => {
-  const o = {}
-  for (let key in root) o[key] = transformFn(stateKey, root[key])
-  return o
-}
+ */
 
-const createNestedActions = (actions, getState, dispatch, setState) => {
-  const transformFn = (stateKey, action) => {
-    return (...args) => {
-      const currentState = getState()
-      setState({
-        ...currentState,
-        [stateKey]: {
-          ...action(currentState[stateKey], getState, getState)(...args)
-        }
-      })
-    }
-  }
+/* 
 
-  const rtnObj = {}
-  for (let key in actions) {
-    rtnObj[key] = mapObj(key, actions[key], transformFn)
-  }
-  return rtnObj
-}
+
+*/
 
 export { combineStores }
