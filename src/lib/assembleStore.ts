@@ -1,5 +1,5 @@
-import { Middlewares } from './../types'
-import { isDifferent } from '../lib/diff'
+import { Middlewares } from '../types'
+import { isDifferent } from './diff'
 
 import {
   State,
@@ -38,11 +38,9 @@ const assembleStore = (createActionsFn: CreateActionsFn) => {
 
     function setState(newState: State, extras: ExtraSetStateArgs = {} ): void {
       if (newState !== undefined && isDifferent(state, newState)) {
-        const newS = middlewares.reduce((pv, cv) => {          
-          return cv(pv, { oldState: getState(), name: extras.name, args: extras.args, actions: getActions() /* dispatch could also be used here, but not a good idea beofre some refactor */ })
+        state = middlewares.reduce((pv, cv) => {          
+          return cv(pv, { prevState: getState(), name: extras.name, args: extras.args /* dispatch could also be used here, but not a good idea beofre some refactor */ })
         }, newState)
-        console.log('old state:', state, 'new:', newS)
-        state = newS
         emit()
       }
     }

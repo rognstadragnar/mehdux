@@ -2,7 +2,7 @@ import {
   Store,
   MapStateToProps,
   MapActionsToProps
-} from '../types.d'
+} from '../types'
 
 type H = {
   type: string,

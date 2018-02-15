@@ -30,15 +30,13 @@ const createNestedActions = (
 ): ParsedActions => {
   const transformFn = (stateKey, actionName, action: Action) => {
     return (...args) => {
-      const currentState = getState()
-      console.log('current state from inside action', currentState);
-      
+      const currentState = getState()      
       setState({
         ...currentState,
         [stateKey]: {
           ...action(currentState[stateKey], getActions())(...args)
         }
-      }, { name: actionName })
+      }, { name: actionName, args })
     }
   }
 

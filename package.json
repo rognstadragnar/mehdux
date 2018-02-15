@@ -23,14 +23,13 @@
     "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
     "dev:main": "microbundle watch --compress false",
-    "bundle:combine": "microbundle src/combine.ts -o ./combine.js -f cjs",
-    "dev:combine": "microbundle watch src/combine.ts -o ./combine.js -f cjs --compress false",
-
+    "dev:utils": "microbundle watch src/utils.ts -o ./utils.js -f cjs --compress false",
+    "bundle:utils": "microbundle src/utils.ts -o ./utils.js -f cjs",
     "bundle:picodom": "microbundle src/bindings/picodom.ts -o ./picodom.js -f cjs",
     "bundle:preact": "microbundle src/bindings/preact.js -o ./preact.js -f cjs",
     "bundle:react": "microbundle src/bindings/react.js -o ./react.js -f cjs",
     "prepare": "npm run build",
-    "build": "npm run bundle:main && npm run bundle:combine && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
+    "build": "npm run bundle:main && npm run bundle:utils && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
     "test": "echo 'should add some tests.. :)'"
   },
   "files": [
@@ -40,7 +39,7 @@
     "react.js.map",
     "preact.js",
     "preact.js.map",
-    "combine.js",
-    "combine.js.map"
+    "utils.js",
+    "utils.js.map"
   ]
 }

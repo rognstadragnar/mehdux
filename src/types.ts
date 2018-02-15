@@ -46,7 +46,7 @@ type Connect = (
 export interface MiddlewareArg {
   name?: string
   args?: Array<any>
-  oldState: State,
+  prevState: State,
   actions?: ParsedActions
 }
 
