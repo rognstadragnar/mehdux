@@ -22,16 +22,15 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
         this.store = useContext ? context.store : store
         this.connection = null
         this.handleUpdate = this.handleUpdate.bind(this)
-        this.state = {
-          actions: this.store.getActions(mapActionsToProps),
-          state: this.store.getState(mapStateToProps)
-        }
+        this.state = Object.assign(
+          {}, 
+          this.store.getState(mapStateToProps), this.store.getActions(mapActionsToProps))
       }
       componentDidMount() {
         this.connection = this.store.connect(mapStateToProps, mapActionsToProps)(this.handleUpdate)
       }
       handleUpdate(state, actions) {
-        this.setState(Object.assign({}, { state, actions }))
+        this.setState(Object.assign({}, state, actions))
       }
       componentWillUnmount() {
         this.connection && this.connection.dispose()
