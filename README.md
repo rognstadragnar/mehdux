@@ -7,8 +7,10 @@
 > Just another tiny, simple state machine
 
 * Easy to grasp API
-* 686 bytes: Tiny, small, slim, light, slender, fit
-* Small React (538 bytes), Preact (457 bytes) and Picodom (210 bytes) integrations
+* ~850 bytes: Tiny, small, slim, light, slender, fit
+* Small React (~700 bytes), Preact (~600 bytes) and Picodom (~200 bytes) integrations
+* Supports for `thunk actions`, `middlewares`, `combining stores`
+* Written in `TypeScript`
 * WordArt logo
 * Emojis in README.md (Todo !important)
 
@@ -75,7 +77,14 @@ store.actions.inc(10)
 // logs { value: 10 }, { inc: f(), dec: f() }
 ```
 
-To subscribe to changes in certain parts of the state tree you can pass a function as the first argument to the `connect`-function. This is similiar to how you map state to props in `react-redux`.
+The `connect` function can take an object containing the following options:
+`mapStateToProps`, `mapActionsToProps`, `leading` and `force`. All of these properties are optional.
+
+#### MapStateToProps
+
+Enables you to only subscribe to certain parts of the state tree. This should be a function that takes state as an argument and returns an object.
+
+On every state update this function will be called. If the result is different from the last state update, the connected function will be called.
 
 ```Javascript
 const mapStateToProps = ({ something, somethingElse }) => ({
@@ -83,10 +92,15 @@ const mapStateToProps = ({ something, somethingElse }) => ({
   somethingElse
 })
 
-store.connect(mapStateToProps)(console.log)
+store.connect({ mapStateToProps })(console.log)
 ```
 
-Similiarly you can pass in a `mapActionsToProps`-function as the second argument to the `connect`-function.
+This is very similiar to how you mapping state to props in `react-redux` works.
+If `null` is passed, the conneciton will not get any state updates.
+
+#### MapStateToProps
+
+Works in the same way `mapStateToProps` works, enabling you to only pass certain actions to you connected function.
 
 ```Javascript
 const mapActionsToProps = actions => ({
@@ -94,10 +108,21 @@ const mapActionsToProps = actions => ({
   increaseByTen: () => actions.inc(10),
 })
 
-store.connect(null, mapActionsToProps)(console.log)
+store.connect({ mapActionsToProps })(console.log)
 ```
 
-Passing `null` as either the first or second argument passes the state or the actions object in its entirety.
+Notice how this enables you to preset an action like the `increaseByTen` demonstrates above.
+If `null` is passed, the conneciton will not get any actions passed.
+
+#### Leading
+
+The `leading` option is an optional `boolean` that tells the store whether or not to execute the connected function on the time of connection.
+`Default: false`
+
+#### Force
+
+The `force` option is also an optional `boolean` that tells the store to execute the connected function on every action, eventhough the state did not change.
+`Default: false`
 
 ## Usage with other frameworks
 
@@ -114,7 +139,7 @@ import { connect } from 'mehdux/react' // or 'mehdux/preact'
 There are two ways to pass the store to the `connect`-function in `mehdux`:
 
 1. By wrapping your app in a higher order `provider`-function like, similiar to how `react-redux` does it.
-2. Passing the store as the first argument to the `connect`-function.
+2. Passing the store in the options object to the `connect` function.
 
 #### 1. By using a Provider
 
@@ -150,10 +175,8 @@ const Button = ({ state, actions }) => {
   return <button onClick={actions.inc}>{state.value}</button>
 }
 
-const ConnectedButton = connect(store)(Button)
+const ConnectedButton = connect({ store })(Button)
 ```
-
-**Note:** _When doing this, `mapStateToProps` and `mapActionsToProps` are passed as the second and third arguments, not the first and the second like usual_
 
 ### Picodom
 
@@ -217,7 +240,7 @@ const view = (state, actions, storeInstance) => {
 // This is to enable the stateful components inside `view` to get rerun,
 // eventhough the parent state does not change.
 
-store.connect(null, null, true)(render(view))
+store.connect({ leading: true, force: true })(render(view))
 ```
 
 **Note:** _This implementation will likely be rewritten to be more similiar to the `React`/`Preact`-implementations_
@@ -227,9 +250,9 @@ store.connect(null, null, true)(render(view))
 ### Dispatching multiple or async actions
 
 `Mehdux` has support for dispatching actions within actions.
-All actions you create also gets passed a `dispatch`-function.
+You have access to other actions within an action.
 
-To dispatch simply pass the name of the action (the object property) as the first argument. Subsequent arguments gets passed to the action.
+To dispatch simply execute the action you want.
 
 ```Javascript
 const actions = {
@@ -238,28 +261,18 @@ const actions = {
     user: [...state.users, user]
   }),
   addManyUsers: state => () => {
-    dispatch('addUser', 'Kari')
-    dispatch('addUser', 'Ola')
+    actions.addUser('Kari')
+    actions.addUser('Ola')
   },
-  addUserIn2s: (state, disaptch) => user => {
-    setTimeout(() => dispatch('addUser', user), 2000)
+  addUserIn2s: (state, actions) => user => {
+    setTimeout(() => actions.addUser(user), 2000)
   },
-  fetchAndSetName: async (state, dispatch) => {
+  fetchAndSetName: async (state, actions) => {
     const res = await fetch('https://myapi.com/v0')
     const user = await res.json()
-    dispatch('addUser', user)
+    actions.addUser(user)
   }
 }
-```
-
-### Combining multiple store instances (WIP)
-
-Bigger apps often have complex state trees. In `redux` you would handle this by combining reducers. With `Mehdux` you can combine stores with the `combineStores`-function like so:
-
-```Javascript
-import { combineStores } from 'mehdux/combine'
-
-const store = combineStores({ users: userStore, posts: postStore })
 ```
 
 ### Middleware/Enhancers
@@ -270,18 +283,38 @@ They recieve the action `name`, `arguments`, `currentState` and `nextState`.
 
 Logging and analytics are examples of middleware usages.
 
+`mehdux/utils` includes a helper function for applying middlewares, but you are free to just pass an `array` as well.
+
 ```Javascript
 import { Store } from 'mehdux'
+import { applyMiddleware } from 'mehdux/utils'
 import { Logger, Analytics } from './middlewares' // or wherever you keep your middlewares
 
-const store = new Store({}, {}, [Logger, Analytics])
+const store = new Store({}, {}, applyMiddleware(Logger, Analytics)
 
 export { store }
 ```
 
+### Combining multiple store instances
+
+Bigger apps often have complex state trees. In `redux` you would handle this by combining reducers. With `Mehdux` you can combine stores with the `combineStores`-function from `mehdux/utils` like so:
+
+```Javascript
+import { combineStores } from 'mehdux/utils'
+
+const store = combineStores({
+  users: userStore,
+  posts: postStore
+}, /* myMiddleware */)
+```
+
+By default combineStores do not copy the middlewares for each sub-store. And you need to apply the middlewares as the second argument.
+However, if you want to copy the original middlewares past to the store you can by passing `true` as the second argument to `combineStores`.
+
 ## Todos
 
 * Emojis in README.md (Todo !important)
+* Tests
 * Sort out type-definitions when using `microbundle`
 
 ## License
