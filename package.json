@@ -30,7 +30,8 @@
     "bundle:preact": "microbundle src/bindings/preact.js -o ./preact.js -f cjs",
     "bundle:react": "microbundle src/bindings/react.js -o ./react.js -f cjs",
     "prepare": "npm run build",
-    "build": "npm run bundle:main && npm run bundle:utils && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
+    "build": "npm run clean && npm run bundle:main && npm run bundle:utils && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
+    "clean": "rimraf dist preact.js preact.js.map react.js react.js.map picodom.js picodom.js.map utils.js utils.js.map",
     "test": "echo 'should add some tests.. :)'"
   },
   "files": [
