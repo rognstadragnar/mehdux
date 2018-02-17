@@ -1,6 +1,7 @@
 import { ConnectOptions } from './../types';
 import { Middlewares } from '../types'
 import { isDifferent } from './diff'
+import { isObj } from './shallowMerge'
 
 import {
   State,
@@ -31,7 +32,7 @@ const assembleStore = (createActionsFn: CreateActionsFn, isCombinedStore: Boolea
   return function createStore(initialState: State = {}, initialActions: Actions = {}, middlewares: Middlewares = []) {
     let connections: Array<Connection> = []
     let state: State = initialState
-    const actions: ParsedActions = createActionsFn({...initialActions}, getState, getActions, setState)
+    const actions: ParsedActions = createActionsFn(initialActions, getState, getActions, setState)
 
     function emit(): void {
       connections.forEach(con => con(state, actions))
@@ -39,16 +40,15 @@ const assembleStore = (createActionsFn: CreateActionsFn, isCombinedStore: Boolea
 
     function setState(newState: State, extras: ExtraSetStateArgs = {} ): void {
       if (newState !== undefined && isDifferent(state, newState)) {
-        state = middlewares.reduce((pv, cv) => {          
-          return cv(pv, { prevState: getState(), name: extras.name, args: extras.args /* dispatch could also be used here, but not a good idea beofre some refactor */ })
-        }, newState)
+        state = { ...state, ...middlewares.reduce((pv, cv) => {          
+          return cv(pv, { 
+            prevState: getState(),
+            name: extras.name,
+            args: extras.args
+            /* dispatch could also be used here, but not a good idea beofre some refactor */ 
+          })
+        }, newState) }
         emit()
-      }
-    }
-
-    function dispatch(name: string, ...args: Array<any>): void {
-      if (typeof actions[name] === 'function') {
-        actions[name](...args)
       }
     }
 
@@ -65,9 +65,10 @@ const assembleStore = (createActionsFn: CreateActionsFn, isCombinedStore: Boolea
       if (mapActionsToProps === null) return {} 
       return mapActionsToProps ? mapActionsToProps(actions) : actions
     }
-    
+
     this.__IS_COMBINED_STORE__ = isCombinedStore
     this.__INITIAL_ACTIONS__ = initialActions
+    this.__MIDDLEWARES__ = middlewares
     this.actions = actions
     this.getState = getState
     this.setState = setState

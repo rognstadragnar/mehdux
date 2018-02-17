@@ -17,12 +17,14 @@ import {
 const createCombinedStore = assembleStore(createNestedActions, true)
 
 function combineStores(stores, middlewares) {
-
   const storeNames = Object.keys(stores)
   const stateObj = {}
   const actionObj = {}
+  const copyMiddlewares = middlewares === true
+  if (copyMiddlewares) middlewares = []
   storeNames.forEach(storeName => {
     if (stores[storeName]) {
+      middlewares = [...middlewares, ...stores[storeName].__MIDDLEWARES__].filter(Boolean)
       stateObj[storeName] = stores[storeName].getState()
       actionObj[storeName] = stores[storeName].__INITIAL_ACTIONS__
     }

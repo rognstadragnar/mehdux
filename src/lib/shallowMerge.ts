@@ -13,4 +13,4 @@ const shallowMerge = (a: {}, b: {}): {} => {
   return obj
 }
 
-export { shallowMerge }
+export { isObj, shallowMerge }
