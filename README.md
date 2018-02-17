@@ -1,18 +1,26 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/rognstadragnar/aoudad/master/mehdux.png" alt="mehdux">
+  <br>
+  <a href="https://www.npmjs.org/package/mehdux">
+    <img src="https://img.shields.io/npm/v/mehdux.svg" alt="npm version">
+  </a>
+  <a href="https://www.npmjs.org/package/mehdux">
+    <img src=https://img.shields.io/npm/dt/mehdux.svg alt="npm download counter">
+  </a>
+  
 </div>
 
-# mehdux
+# mehdux 🐧
 
 > Just another tiny, simple state machine
 
-* Easy to grasp API
-* ~850 bytes: Tiny, small, slim, light, slender, fit
-* Small React (~700 bytes), Preact (~600 bytes) and Picodom (~200 bytes) integrations
-* Supports for `thunk actions`, `middlewares`, `combining stores`
-* Written in `TypeScript`
-* WordArt logo
-* Emojis in README.md (Todo !important)
+* 💆 Easy to grasp API
+* 🐎 ~850 bytes: Tiny, small, slim, light, slender, fit
+* ⚛️ Small React (~700 bytes), Preact (~600 bytes) and Picodom (~200 bytes) integrations
+* 😌 Support for `thunk actions`, `middlewares`, `combining stores`
+* 🛂 Written in `TypeScript`
+* 🎉 WordArt logo
+* 🌞 Emojis in README.md
 
 ## Motivation
 
@@ -308,7 +316,7 @@ const store = combineStores({
 }, /* myMiddleware */)
 ```
 
-By default combineStores do not copy the middlewares for each sub-store. And you need to apply the middlewares as the second argument.
+By default combineStores does not copy the middlewares for each sub-store. And you need to apply the middlewares as the second argument.
 However, if you want to copy the original middlewares past to the store you can by passing `true` as the second argument to `combineStores`.
 
 ## Todos
