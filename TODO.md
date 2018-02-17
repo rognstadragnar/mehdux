@@ -1,6 +1,4 @@
 # Todo
-
-Make `combineStores` work properly
 Send actions to each action, instead of a dispatch function.
 ```Javascript
 const actions = {
@@ -9,6 +7,7 @@ const actions = {
   }
 }
 ```
+
 
 
 

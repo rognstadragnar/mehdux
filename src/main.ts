@@ -19,6 +19,6 @@ import {
   ExtraSetStateArgs
 } from './types'
 
-const Store = assembleStore(createActions)
+const Store = assembleStore(createActions, false)
 
 export { Store }

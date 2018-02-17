@@ -14,7 +14,7 @@ import {
   MapActionsToProps
 } from '../types'
 
-const createCombinedStore = assembleStore(createNestedActions)
+const createCombinedStore = assembleStore(createNestedActions, true)
 
 function combineStores(stores, middlewares) {
 
@@ -31,4 +31,4 @@ function combineStores(stores, middlewares) {
   return new createCombinedStore(stateObj, actionObj, middlewares)
 }
 
-export { combineStores}
+export { combineStores }

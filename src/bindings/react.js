@@ -1,5 +1,5 @@
 import { createElement, Component, Children } from 'react'
-
+import { shallowMerge } from '../lib/shallowMerge.ts'
 const contextType = { store: () => {} }
 
 class Provider extends Component {
@@ -19,22 +19,26 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
     class Wrapper extends Component {
       constructor(props, context) {
         super(props, context)
-        this.store = useContext ? context.store : store
-        this.connection = null
         this.handleUpdate = this.handleUpdate.bind(this)
-        this.state = Object.assign(
-          {}, 
-          this.store.getState(mapStateToProps), this.store.getActions(mapActionsToProps))
+        this.store = useContext ? context.store : store
+        this.state = this.getMergedState(this.store.getState(mapStateToProps), this.store.getActions(mapActionsToProps))
       }
       componentDidMount() {
-        this.connection = this.store.connect(mapStateToProps, mapActionsToProps)(this.handleUpdate)
-      }
-      handleUpdate(state, actions) {
-        this.setState(Object.assign({}, state, actions))
+        this.connection = this.store.connect({ mapStateToProps, mapActionsToProps, leading: false })(this.handleUpdate)
       }
       componentWillUnmount() {
-        this.connection && this.connection.dispose()
+        this.connection.dispose()
       }
+      handleUpdate(state, actions) {
+        this.setState(this.getMergedState(state, actions))
+      }
+      getMergedState (state, actions) {
+        if (this.store.__IS_COMBINED_STORE__) {
+          return shallowMerge(actions, state)
+        }
+        return Object.assign({}, actions, state)
+      }
+      
       render() {
         return createElement(WrappedComponent, 
           Object.assign({}, this.state, this.props))

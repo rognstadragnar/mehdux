@@ -13,6 +13,7 @@
     "microbundle": "^0.4.3",
     "preact": "^8.2.7",
     "react": "^16.2.0",
+    "rimraf": "^2.6.2",
     "tslint": "^5.9.1"
   },
   "peerDependencies": {

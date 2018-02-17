@@ -1,3 +1,4 @@
+import { ConnectOptions } from './../types';
 import { Middlewares } from '../types'
 import { isDifferent } from './diff'
 
@@ -26,7 +27,7 @@ type CreateActionsFn = (
   setState: SetState
 ) => ParsedActions
 
-const assembleStore = (createActionsFn: CreateActionsFn) => {
+const assembleStore = (createActionsFn: CreateActionsFn, isCombinedStore: Boolean = false) => {
   return function createStore(initialState: State = {}, initialActions: Actions = {}, middlewares: Middlewares = []) {
     let connections: Array<Connection> = []
     let state: State = initialState
@@ -55,23 +56,29 @@ const assembleStore = (createActionsFn: CreateActionsFn) => {
       connections = connections.filter(c => c !== connection)
     }
   
-    function getState(mapStateToProps?: MapStateToProps) {    
+    function getState(mapStateToProps?: MapStateToProps) {  
+      if (mapStateToProps === null) return {} 
       return mapStateToProps ? mapStateToProps(state) : state
     }
   
     function getActions(mapActionsToProps?: MapActionsToProps): ParsedActions {
+      if (mapActionsToProps === null) return {} 
       return mapActionsToProps ? mapActionsToProps(actions) : actions
     }
+    
+    this.__IS_COMBINED_STORE__ = isCombinedStore
     this.__INITIAL_ACTIONS__ = initialActions
     this.actions = actions
     this.getState = getState
     this.setState = setState
     this.getActions = getActions
-    this.connect = (
-      mapStateToProps: MapStateToProps = null,
-      mapActionsToProps: MapActionsToProps = null,
-      force: boolean = false
-    ) => {
+    this.connect = (opts: ConnectOptions = {}) => {
+      const {
+        mapStateToProps,
+        mapActionsToProps,
+        force = false,
+        leading = false
+      } = opts
       let prevState = getState(mapStateToProps)
       return (consumer: Consumer): Dispose => {
         const connection = (state: State, actions: ParsedActions): void => {
@@ -81,7 +88,7 @@ const assembleStore = (createActionsFn: CreateActionsFn) => {
             consumer(currentState, getActions(mapActionsToProps))
           }
         }
-        consumer(prevState, getActions(mapActionsToProps))
+        if (leading) consumer(prevState, getActions(mapActionsToProps))
 
         connections.push(connection)
         return {

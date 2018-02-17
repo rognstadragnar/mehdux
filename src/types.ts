@@ -9,7 +9,12 @@ export type ExtraSetStateArgs = {
   name?: string,
 }
 
-
+export interface ConnectOptions {
+  mapStateToProps?: MapStateToProps,
+  mapActionsToProps?: MapActionsToProps,
+  force?: boolean
+  leading?: boolean
+}
 
 export type Consumer = (State, ParsedActions) => any
 export type Connection = (state: State, actions: ParsedActions) => void
