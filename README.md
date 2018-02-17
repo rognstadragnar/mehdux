@@ -321,7 +321,6 @@ However, if you want to copy the original middlewares past to the store you can 
 
 ## Todos
 
-* Emojis in README.md (Todo !important)
 * Tests
 * Sort out type-definitions when using `microbundle`
 
