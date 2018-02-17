@@ -1,13 +1,21 @@
-import { ParsedAction } from './../types'
-import { SetState, GetState, Actions, GetActions, ParsedActions, Action, State } from '../types'
+import {
+  Action,
+  GetActions,
+  GetState,
+  IActions,
+  IParsedActions,
+  IState,
+  ParsedAction,
+  SetState
+} from '../types'
 
 const createActions = (
-  actions: Actions,
+  actions: IActions,
   getState: GetState,
   getActions: GetActions,
   setState: SetState
-): ParsedActions => {
-  const returnFn = (fn: Action, key: string) => (...args: Array<any>): void => {
+): IParsedActions => {
+  const returnFn = (fn: Action, key: string) => (...args: any[]): void => {
     const currentState = getState()
     const newState = fn(currentState, getActions())(...args)
     setState(newState, { name: key, args })
@@ -23,33 +31,35 @@ const createActions = (
 }
 
 const createNestedActions = (
-  actions: Actions,
+  actions: IActions,
   getState: GetState,
   getActions: GetActions,
   setState: SetState
-): ParsedActions => {
+): IParsedActions => {
   const transformFn = (stateKey, actionName, action: Action) => {
     return (...args) => {
-      setState({
-        [stateKey]: {
-          ...action(getState()[stateKey], getActions())(...args)
-        }
-      }, { name: `${stateKey}.${actionName}`, args })
+      setState(
+        {
+          [stateKey]: {
+            ...action(getState()[stateKey], getActions())(...args)
+          }
+        },
+        { name: `${stateKey}.${actionName}`, args }
+      )
     }
   }
 
   return Object.keys(actions).reduce((pv, cv) => {
     return {
       ...pv,
-      [cv]: Object.keys(actions[cv]).reduce((pInnerV, cInnerV) => {        
+      [cv]: Object.keys(actions[cv]).reduce((pInnerV, cInnerV) => {
         return {
           ...pInnerV,
-          [cInnerV]: transformFn(cv, cInnerV,actions[cv][cInnerV])
+          [cInnerV]: transformFn(cv, cInnerV, actions[cv][cInnerV])
         }
       }, {})
     }
   }, {})
-
 }
 
 export { createActions, createNestedActions }

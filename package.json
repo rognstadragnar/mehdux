@@ -12,9 +12,11 @@
   "devDependencies": {
     "microbundle": "^0.4.3",
     "preact": "^8.2.7",
+    "prettier": "^1.10.2",
     "react": "^16.2.0",
     "rimraf": "^2.6.2",
-    "tslint": "^5.9.1"
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.8.0"
   },
   "peerDependencies": {
     "preact": "*",

@@ -1,45 +1,55 @@
 import { MapStateToProps } from './types'
-export type Dispatch = (actionName: string, ...args: Array<any>) => void
-export type State = object
+export type Dispatch = (actionName: string, ...args: any[]) => void
+export type IState = object
 export type GetState = (MapStateToProps?) => object
-export type SetState = (state: State, extraArgs?: ExtraSetStateArgs) => void
+export type SetState = (state: IState, extraArgs?: IExtraSetStateArgs) => void
 
-export type ExtraSetStateArgs = {
-  args?: any[],
-  name?: string,
+export interface IExtraSetStateArgs {
+  args?: any[]
+  name?: string
 }
 
-export interface ConnectOptions {
-  mapStateToProps?: MapStateToProps,
-  mapActionsToProps?: MapActionsToProps,
+export interface IConnectOptions {
+  mapStateToProps?: MapStateToProps
+  mapActionsToProps?: MapActionsToProps
   force?: boolean
   leading?: boolean
 }
 
 export type Consumer = (State, ParsedActions) => any
-export type Connection = (state: State, actions: ParsedActions) => void
-export type Dispose = { dispose: () => void }
-export type Action = (state: State, actions: ParsedActions) => (...args: Array<any>) => State
+export type Connection = () => void
+export interface IDispose {
+  dispose: () => void
+}
+export type Action = (
+  state: IState,
+  actions: IParsedActions
+) => (...args: any[]) => IState
 
-export type Actions = {
+export interface IActions {
   [propName: string]: Action
 }
-export type ParsedAction = (...args: Array<any>) => void
-export type ParsedActions = {
+export type ParsedAction = (...args: any[]) => void
+export interface IParsedActions {
   [propName: string]: ParsedAction
 }
-export type InitialState = State
+export type InitialState = IState
 
-export type MapStateToProps = (state: State) => State | undefined
-export type MapActionsToProps = (actions: ParsedActions) => ParsedActions | undefined
-export type GetActions = (MapActionsToProps?) => ParsedActions
+export type MapStateToProps = (state: IState) => IState | undefined
+export type MapActionsToProps = (
+  actions: IParsedActions
+) => IParsedActions | undefined
+export type GetActions = (MapActionsToProps?) => IParsedActions
 
-export type Store = (mapState: MapStateToProps, mapActions: MapActionsToProps) => any
+export type IStore = (
+  mapState: MapStateToProps,
+  mapActions: MapActionsToProps
+) => any
 
-export interface StoreInstance {
+export interface IStoreInstance {
   connect: Connect
-  getState: (m: MapStateToProps) => State
-  getActions: (a: MapActionsToProps) => ParsedActions
+  getState: (m: MapStateToProps) => IState
+  getActions: (a: MapActionsToProps) => IParsedActions
 }
 
 type Connect = (
@@ -48,12 +58,12 @@ type Connect = (
   force?: boolean
 ) => (Function) => { dispose: () => void }
 
-export interface MiddlewareArg {
+export interface IMiddlewareArg {
   name?: string
-  args?: Array<any>
-  prevState: State,
-  actions?: ParsedActions
+  args?: any[]
+  prevState: IState
+  actions?: IParsedActions
 }
 
-export type Middleware = (newState: State, arg: MiddlewareArg) => State
-export type Middlewares = Array<Middleware>
+export type Middleware = (newState: IState, arg: IMiddlewareArg) => IState
+export type Middlewares = Middleware[]

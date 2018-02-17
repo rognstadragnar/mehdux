@@ -1,15 +1,17 @@
-import { State, MiddlewareArg } from './../types';
+import { IMiddlewareArg, IState } from './../types'
 
 const logger = (
-  state: State,
-  { prevState, args, name }: MiddlewareArg
-): State => {
-  console.group(`Recieved action: ${name}`);
-  console.info(`Arguments: ${args.join[', ']}.`);
-  console.info('Previous state:', prevState);
-  console.info('Next state:', state);
-  console.groupEnd();
-  return state;
-};
+  state: IState,
+  { prevState, args, name }: IMiddlewareArg
+): IState => {
+  if (typeof window.console !== undefined) {
+    console.group(`Recieved action: ${name}`) // tslint:disable-line:no-console
+    console.info(`Arguments: ${args.join[', ']}.`) // tslint:disable-line:no-console
+    console.info('Previous state:', prevState) // tslint:disable-line:no-console
+    console.info('Next state:', state) // tslint:disable-line:no-console
+    console.groupEnd() // tslint:disable-line:no-console
+  }
+  return state
+}
 
 export { logger }

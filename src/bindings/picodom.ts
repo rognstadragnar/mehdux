@@ -1,24 +1,24 @@
-import {
-  Store,
-  MapStateToProps,
-  MapActionsToProps
-} from '../types'
+import { IStore, MapActionsToProps, MapStateToProps } from '../types'
 
-type H = {
-  type: string,
-  props: object,
-  children: string | Array<H> | H
+interface IH {
+  type: string
+  props: object
+  children: string | IH[] | IH
 }
-type Component = (...props: Array<any>) => H
+type Component = (...props: any[]) => IH
 
-function connect(storeInstance, mapState: MapStateToProps, mapActions: MapActionsToProps) {
-  return (component) => {
+function connect(
+  storeInstance,
+  mapState: MapStateToProps,
+  mapActions: MapActionsToProps
+) {
+  return component => {
     const propsFromState = () => ({
       ...storeInstance.getState(mapState),
-      ...storeInstance.getActions(mapActions),
-    });
-    return props => component({ ...propsFromState(), ...props });
-  };
+      ...storeInstance.getActions(mapActions)
+    })
+    return props => component({ ...propsFromState(), ...props })
+  }
 }
 
 export { connect }

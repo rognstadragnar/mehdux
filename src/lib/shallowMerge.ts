@@ -1,14 +1,18 @@
-const isObj = (a) => {
-  return a && !Array.isArray(a) && typeof a === 'object'
+const isObj = a => {
+  return a && typeof a === 'object' && !Array.isArray(a)
 }
 
 const shallowMerge = (a: {}, b: {}): {} => {
-  const obj = {} 
-  for (let key in a) {
-    obj[key] = isObj(a[key]) ? Object.assign({}, a[key], b[key]) : a[key] 
+  const obj = {}
+  for (const key in a) {
+    if (a.hasOwnProperty(key)) {
+      obj[key] = isObj(a[key]) ? Object.assign({}, a[key], b[key]) : a[key]
+    }
   }
-  for (let key in b) {
-    obj[key] = isObj(b[key]) ? Object.assign({}, a[key], b[key]) : b[key] 
+  for (const key in b) {
+    if (b.hasOwnProperty(key)) {
+      obj[key] = isObj(b[key]) ? Object.assign({}, a[key], b[key]) : b[key]
+    }
   }
   return obj
 }

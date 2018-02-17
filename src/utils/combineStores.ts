@@ -1,17 +1,17 @@
-import { isDifferent } from '../lib/diff'
 import { assembleStore } from '../lib/assembleStore'
-import { createNestedActions } from '../lib/helpers'
+import { isDifferent } from '../lib/diff'
+import { createNestedActions } from '../lib/helpers'
 import {
-  State,
   Action,
-  Actions,
   Connection,
   Consumer,
-  Dispose,
-  ParsedAction,
-  ParsedActions,
+  IActions,
+  IDispose,
+  IParsedActions,
+  IState,
+  MapActionsToProps,
   MapStateToProps,
-  MapActionsToProps
+  ParsedAction
 } from '../types'
 
 const createCombinedStore = assembleStore(createNestedActions, true)
@@ -21,15 +21,20 @@ function combineStores(stores, middlewares) {
   const stateObj = {}
   const actionObj = {}
   const copyMiddlewares = middlewares === true
-  if (copyMiddlewares) middlewares = []
+  if (copyMiddlewares) {
+    middlewares = []
+  }
   storeNames.forEach(storeName => {
     if (stores[storeName]) {
-      middlewares = [...middlewares, ...stores[storeName].__MIDDLEWARES__].filter(Boolean)
+      middlewares = [
+        ...middlewares,
+        ...stores[storeName].__MIDDLEWARES__
+      ].filter(Boolean)
       stateObj[storeName] = stores[storeName].getState()
       actionObj[storeName] = stores[storeName].__INITIAL_ACTIONS__
     }
     // warn if in development
-  })  
+  })
   return new createCombinedStore(stateObj, actionObj, middlewares)
 }
 
