@@ -10,6 +10,7 @@
   "module": "dist/mehdux.esm.js",
   "browser": "dist/mehdux.umd.js",
   "devDependencies": {
+    "@types/react": "^16.0.38",
     "microbundle": "^0.4.3",
     "preact": "^8.2.7",
     "prettier": "^1.10.2",
@@ -29,8 +30,8 @@
     "dev:utils": "microbundle watch src/utils.ts -o ./utils.js -f cjs --compress false",
     "bundle:utils": "microbundle src/utils.ts -o ./utils.js -f cjs",
     "bundle:picodom": "microbundle src/bindings/picodom.ts -o ./picodom.js -f cjs",
-    "bundle:preact": "microbundle src/bindings/preact.js -o ./preact.js -f cjs",
-    "bundle:react": "microbundle src/bindings/react.js -o ./react.js -f cjs",
+    "bundle:preact": "microbundle src/bindings/preact/index.ts -o ./preact.js -f cjs",
+    "bundle:react": "microbundle src/bindings/react/index.ts -o ./react.js -f cjs",
     "prepare": "npm run build",
     "build": "npm run clean && npm run bundle:main && npm run bundle:utils && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
     "clean": "rimraf dist preact.js preact.js.map react.js react.js.map picodom.js picodom.js.map utils.js utils.js.map",

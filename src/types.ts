@@ -47,15 +47,14 @@ export type IStore = (
 ) => any
 
 export interface IStoreInstance {
+  __IS_COMBINED_STORE__: boolean
   connect: Connect
   getState: (m: MapStateToProps) => IState
   getActions: (a: MapActionsToProps) => IParsedActions
 }
 
-type Connect = (
-  s?: MapStateToProps,
-  a?: MapActionsToProps,
-  force?: boolean
+export type Connect = (
+  opts: IConnectOptions
 ) => (Function) => { dispose: () => void }
 
 export interface IMiddlewareArg {

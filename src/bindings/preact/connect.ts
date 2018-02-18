@@ -1,22 +1,32 @@
-import { createElement, Component, Children } from 'react'
-import { shallowMerge } from '../lib/shallowMerge.ts'
-const contextType = { store: () => {} }
+import * as Preact from 'preact'
+import { shallowMerge } from '../../lib/shallowMerge'
+import {
+  IDispose,
+  IStoreInstance,
+  MapActionsToProps,
+  MapStateToProps
+} from './../../types'
 
-class Provider extends Component {
-  getChildContext() {
-    return { store: this.props.store }
-  }
-  render() {
-    return Children.only(this.props.children)
-  }
+interface IConnect {
+  store?: IStoreInstance
+  mapActionsToProps?: MapActionsToProps
+  mapStateToProps?: MapStateToProps
 }
 
-Provider.childContextTypes = contextType
-Provider.displayName = 'Provider'
+interface IState {
+  store: IStoreInstance
+  state: {}
+}
 
-const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
-  return function(WrappedComponent) {
-    class Connect extends Component {
+const connect = ({
+  store,
+  mapStateToProps,
+  mapActionsToProps
+}: IConnect = {}) => {
+  return WrappedComponent => {
+    class Connect extends Preact.Component<{}, IState> {
+      private store: IStoreInstance
+      private connection: IDispose
       constructor(props, context) {
         super(props, context)
         this.handleUpdate = this.handleUpdate.bind(this)
@@ -26,35 +36,31 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
           this.store.getActions(mapActionsToProps)
         )
       }
-      componentDidMount() {
+      public componentDidMount() {
         this.connection = this.store.connect({
-          mapStateToProps,
+          leading: false,
           mapActionsToProps,
-          leading: false
+          mapStateToProps
         })(this.handleUpdate)
       }
-      componentWillUnmount() {
+      public componentWillUnmount() {
         this.connection.dispose()
       }
-      handleUpdate(state, actions) {
+      public handleUpdate(state, actions) {
         this.setState(this.getMergedState(state, actions))
       }
-      getMergedState(state, actions) {
+      public getMergedState(state, actions) {
         if (this.store.__IS_COMBINED_STORE__) {
           return shallowMerge(actions, state)
         }
         return Object.assign({}, actions, state)
       }
-
-      render() {
-        return createElement(
+      public render() {
+        return Preact.h(
           WrappedComponent,
           Object.assign({}, this.state, this.props)
         )
       }
-    }
-    Connect.contextTypes = {
-      store: () => {}
     }
     Connect.displayName = `Connected(${WrappedComponent.displayName ||
       WrappedComponent.name ||
@@ -63,6 +69,4 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
   }
 }
 
-connect.contextTypes = contextType
-
-export { Provider, connect }
+export { connect }
