@@ -1,3 +1,5 @@
+const flattenArray = (arr: any[]): any[] => [].concat.apply([], arr)
+
 const isObj = a => {
   return a && typeof a === 'object' && !Array.isArray(a)
 }
@@ -17,4 +19,4 @@ const shallowMerge = (a: {}, b: {}): {} => {
   return obj
 }
 
-export { isObj, shallowMerge }
+export { isObj, shallowMerge, flattenArray }

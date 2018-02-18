@@ -52,16 +52,19 @@ const assembleStore = (
 
     function setState(newState: IState, extras: IExtraSetStateArgs = {}): void {
       if (newState !== undefined && isDifferent(state, newState)) {
-        state = {
-          ...state,
-          ...middlewares.reduce((pv, cv) => {
+        if (middlewares && middlewares.length > 0) {
+          newState = middlewares.reduce((pv, cv) => {
             return cv(pv, {
               args: extras.args,
               name: extras.name,
               prevState: getState()
-              /* dispatch could also be used here, but not a good idea beofre some refactor */
             })
           }, newState)
+        }
+
+        state = {
+          ...state,
+          ...newState
         }
         emit()
       }

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es6",
     "paths": {
       "*": ["node_modules/*", "node_modules/@types/*"]
     }
