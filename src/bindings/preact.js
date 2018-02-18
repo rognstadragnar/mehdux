@@ -1,20 +1,20 @@
 import { h, Component } from 'preact'
 import { shallowMerge } from '../lib/shallowMerge.ts'
 
-export function Provider(props) {
+function Provider(props) {
   this.getChildContext = () => ({ store: props.store })
 }
 
+Provider.displayName = 'Provider'
 Provider.prototype.render = props => props.children[0]
 
-export const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
-  const useContext = !store || typeof store !== 'object'
+const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
   return function(WrappedComponent) {
-    return class extends Component {
+    class Connect extends Component {
       constructor(props, context) {
         super(props, context)
         this.handleUpdate = this.handleUpdate.bind(this)
-        this.store = useContext ? context.store : store
+        this.store = store || context.store
         this.state = this.getMergedState(
           this.store.getState(mapStateToProps),
           this.store.getActions(mapActionsToProps)
@@ -43,5 +43,11 @@ export const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
         return h(WrappedComponent, Object.assign({}, this.state, this.props))
       }
     }
+    Connect.displayName = `Connected(${WrappedComponent.displayName ||
+      WrappedComponent.name ||
+      'Component'})`
+    return Connect
   }
 }
+
+export { Provider, connect }

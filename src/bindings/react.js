@@ -12,15 +12,15 @@ class Provider extends Component {
 }
 
 Provider.childContextTypes = contextType
+Provider.displayName = 'Provider'
 
 const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
-  const useContext = !store || typeof store !== 'object'
   return function(WrappedComponent) {
-    class Wrapper extends Component {
+    class Connect extends Component {
       constructor(props, context) {
         super(props, context)
         this.handleUpdate = this.handleUpdate.bind(this)
-        this.store = useContext ? context.store : store
+        this.store = store || context.store
         this.state = this.getMergedState(
           this.store.getState(mapStateToProps),
           this.store.getActions(mapActionsToProps)
@@ -53,10 +53,13 @@ const connect = ({ store, mapStateToProps, mapActionsToProps } = {}) => {
         )
       }
     }
-    Wrapper.contextTypes = {
+    Connect.contextTypes = {
       store: () => {}
     }
-    return Wrapper
+    Connect.displayName = `Connected(${WrappedComponent.displayName ||
+      WrappedComponent.name ||
+      'Component'})`
+    return Connect
   }
 }
 
