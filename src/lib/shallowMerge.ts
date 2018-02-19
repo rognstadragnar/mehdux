@@ -8,12 +8,12 @@ const shallowMerge = (a: {}, b: {}): {} => {
   const obj = {}
   for (const key in a) {
     if (a.hasOwnProperty(key)) {
-      obj[key] = isObj(a[key]) ? Object.assign({}, a[key], b[key]) : a[key]
+      obj[key] = isObj(a[key]) ? { ...a[key], ...b[key] } : a[key]
     }
   }
   for (const key in b) {
     if (b.hasOwnProperty(key)) {
-      obj[key] = isObj(b[key]) ? Object.assign({}, a[key], b[key]) : b[key]
+      obj[key] = isObj(b[key]) ? { ...a[key], ...b[key] } : b[key]
     }
   }
   return obj

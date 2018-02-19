@@ -53,13 +53,10 @@ const connect = ({
         if (this.store.__IS_COMBINED_STORE__) {
           return shallowMerge(actions, state)
         }
-        return Object.assign({}, actions, state)
+        return { ...actions, ...state }
       }
       public render() {
-        return Preact.h(
-          WrappedComponent,
-          Object.assign({}, this.state, this.props)
-        )
+        return Preact.h(WrappedComponent, { ...this.state, ...this.props })
       }
     }
     Connect.displayName = `Connected(${WrappedComponent.displayName ||

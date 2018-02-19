@@ -58,13 +58,13 @@ const connect = ({
         if (this.store.__IS_COMBINED_STORE__) {
           return shallowMerge(actions, state)
         }
-        return Object.assign({}, actions, state)
+        return { ...actions, ...state }
       }
       public render() {
-        return React.createElement(
-          WrappedComponent,
-          Object.assign({}, this.state, this.props)
-        )
+        return React.createElement(WrappedComponent, {
+          ...this.state,
+          ...this.props
+        })
       }
     }
     // @ts-ignore
