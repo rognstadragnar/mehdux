@@ -275,7 +275,7 @@ const actions = {
   addUserIn2s: (state, actions) => user => {
     setTimeout(() => actions.addUser(user), 2000)
   },
-  fetchAndSetName: async (state, actions) => {
+  fetchAndSetName: (state, actions) => async () => {
     const res = await fetch('https://myapi.com/v0')
     const user = await res.json()
     actions.addUser(user)
