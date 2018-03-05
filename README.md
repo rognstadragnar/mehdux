@@ -106,7 +106,7 @@ store.connect({ mapStateToProps })(console.log)
 This is very similiar to how you mapping state to props in `react-redux` works.
 If `null` is passed, the conneciton will not get any state updates.
 
-#### MapStateToProps
+#### MapActionsToProps
 
 Works in the same way `mapStateToProps` works, enabling you to only pass certain actions to you connected function.
 
