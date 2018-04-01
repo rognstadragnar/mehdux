@@ -1,4 +1,5 @@
-import React from 'react'
+// @jsx createElement
+import * as React from 'react'
 import { shallowMerge } from '../../lib/shallowMerge'
 
 import { contextType } from './helpers'
@@ -8,7 +9,6 @@ const { createContext, Component, createElement } = React
 class Connect extends Component {
   constructor(props, context) {
     super(props, context)
-
     const { store, options = {} } = props
     this.state = this.getMergedState(
       store.getState(options.mapStateToProps),
@@ -17,7 +17,7 @@ class Connect extends Component {
 
     this.handleUpdate = this.handleUpdate.bind(this)
     this.connection = null // will have unsubscribe method after supscription
-    this.displayName = `Connected(${this.props.Component.displayName ||
+    this.displayName = `Connected(${this.props.component.displayName ||
       'Component'})`
   }
   componentDidMount() {
@@ -43,22 +43,24 @@ class Connect extends Component {
   }
   render() {
     return createElement(
-      this.props.Component,
+      this.props.component,
       Object.assign({}, this.state, this.props)
     )
   }
 }
 
-export function experimatal(store) {
+export function experimental(store) {
   const { Consumer, Provider } = createContext(store)
   const connect = options => component => {
-    return createElement(Consumer, {}, store =>
-      createElement(Connect, { options, component, store })
-    )
+    return props =>
+      createElement(Consumer, {}, store => {
+        return createElement(Connect, { options, component, store })
+      })
   }
 
   return {
-    Provider,
+    Provider: ({ children }) =>
+      createElement(Provider, { value: store }, children),
     connect
   }
 }

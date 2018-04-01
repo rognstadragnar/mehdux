@@ -1,3 +1,3 @@
 export { connect, IConnect } from './connect'
 export { Provider } from './Provider'
-export { experimatal } from './new-context.js'
+export { experimental } from './new-context.js'
