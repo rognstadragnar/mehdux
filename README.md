@@ -28,7 +28,7 @@ Nobody thinks the JS community needs another state management library, so I made
 
 ## Examples
 
-* [TodoMVC](examples/todomvc/README.md)
+* [TodoMVC](examples/todomvc)
 
 ## Usage
 
