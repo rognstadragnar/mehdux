@@ -14,6 +14,7 @@ import {
   IExtraSetStateArgs,
   IParsedActions,
   IState,
+  IMiddlewareArg,
   MapActionsToProps,
   MapStateToProps,
   Middlewares,
@@ -61,11 +62,17 @@ const assembleStore = (
             })
           }, newState)
         }
-
-        state = {
-          ...state,
-          ...newState
+        if (Array.isArray(state)) {
+          state = [...newState]
+        } else if (typeof state === 'object') {
+          state = {
+            ...state,
+            ...newState
+          }
+        } else {
+          state = newState
         }
+
         emit()
       }
     }

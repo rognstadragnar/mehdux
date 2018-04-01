@@ -18,7 +18,7 @@ import {
 
 const createCombinedStore = assembleStore(createNestedActions, true)
 
-type combinedMiddlewares = Middlewares[] | true
+export type combinedMiddlewares = Middlewares[] | true
 
 function combineStores(stores = {}, newMiddlewares: combinedMiddlewares = []) {
   const storeNames = Object.keys(stores)

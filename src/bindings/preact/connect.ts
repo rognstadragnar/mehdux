@@ -7,13 +7,13 @@ import {
   MapStateToProps
 } from './../../types'
 
-interface IConnect {
+export interface IConnect {
   store?: IStoreInstance
   mapActionsToProps?: MapActionsToProps
   mapStateToProps?: MapStateToProps
 }
 
-interface IState {
+export interface IState {
   store: IStoreInstance
   state: {}
 }

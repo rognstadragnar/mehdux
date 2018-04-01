@@ -1,5 +1,5 @@
-import { Middlewares } from '../types'
+import { IMiddlewareArg, Middlewares } from '../types'
 
 const applyMiddleware = (...args: Middlewares): Middlewares => args
 
-export { applyMiddleware }
+export { applyMiddleware, Middlewares, IMiddlewareArg }

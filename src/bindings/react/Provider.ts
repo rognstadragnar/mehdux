@@ -3,7 +3,7 @@ import { shallowMerge } from '../../lib/shallowMerge'
 import { IStoreInstance } from './../../types'
 import { contextType } from './helpers'
 
-interface IProps {
+export interface IProps {
   store: IStoreInstance
 }
 

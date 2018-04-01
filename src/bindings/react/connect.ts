@@ -8,13 +8,13 @@ import {
 } from './../../types'
 import { contextType } from './helpers'
 
-interface IConnect {
+export interface IConnect {
   store?: IStoreInstance
   mapStateToProps?: MapStateToProps
   mapActionsToProps?: MapActionsToProps
 }
 
-interface IState {
+export interface IState {
   store: IStoreInstance
   state: {}
 }

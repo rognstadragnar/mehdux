@@ -1,6 +1,6 @@
-import { MapStateToProps } from './types'
+// import { MapStateToProps } from './types'
 export type Dispatch = (actionName: string, ...args: any[]) => void
-export type IState = object
+export type IState = any
 export type GetState = (MapStateToProps?) => object
 export type SetState = (state: IState, extraArgs?: IExtraSetStateArgs) => void
 

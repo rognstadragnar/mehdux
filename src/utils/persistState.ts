@@ -1,12 +1,12 @@
 import { IState } from '../types'
 
-interface IConfig {
+export interface IConfig {
   key: string
   expire?: number
   interval?: number
 }
 
-interface IPersistState {
+export interface IPersistState {
   set: (State) => IState
   get: () => IState
   purge: () => void

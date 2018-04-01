@@ -2,7 +2,7 @@ import * as Preact from 'preact'
 import { shallowMerge } from '../../lib/shallowMerge'
 import { IStoreInstance } from './../../types'
 
-interface IProps {
+export interface IProps {
   store: IStoreInstance
 }
 

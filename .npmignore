@@ -12,3 +12,4 @@ package-lock.json
 !/utils.js.map
 !/picodom.js
 !/picodom.js.map
+.rpt2_cache
