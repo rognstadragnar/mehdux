@@ -4,7 +4,6 @@ node_modules
 .DS_Store
 /dist
 /full
-package-lock.json
 /preact.js
 /preact.js.map
 /react.js
