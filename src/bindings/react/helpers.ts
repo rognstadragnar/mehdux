@@ -1,3 +1,3 @@
-const contextType = { store: () => {} } // tslint:disable-line
+const contextType = (key: string) => ({ [key]: () => {} }) // tslint:disable-line
 
 export { contextType }

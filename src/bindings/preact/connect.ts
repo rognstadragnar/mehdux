@@ -9,6 +9,7 @@ import {
 
 export interface IConnect {
   store?: IStoreInstance
+  storeKey?: string
   mapActionsToProps?: MapActionsToProps
   mapStateToProps?: MapStateToProps
 }
@@ -19,6 +20,7 @@ export interface IState {
 }
 
 const connect = ({
+  storeKey,
   store,
   mapStateToProps,
   mapActionsToProps
@@ -30,7 +32,7 @@ const connect = ({
       constructor(props, context) {
         super(props, context)
         this.handleUpdate = this.handleUpdate.bind(this)
-        this.store = store || context.store
+        this.store = store || context[storeKey || '__MEHDUX_STORE__']
         this.state = this.getMergedState(
           this.store.getState(mapStateToProps),
           this.store.getActions(mapActionsToProps)
