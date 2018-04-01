@@ -26,6 +26,10 @@
 
 Nobody thinks the JS community needs another state management library, so I made one to spite you all.
 
+## Examples
+
+* [TodoMVC](examples/todomvc/README.md)
+
 ## Usage
 
 ```
@@ -146,8 +150,8 @@ import { connect } from 'mehdux/react' // or 'mehdux/preact'
 
 There are two ways to pass the store to the `connect`-function in `mehdux`:
 
-1. By wrapping your app in a higher order `provider`-function like, similiar to how `react-redux` does it.
-2. Passing the store in the options object to the `connect` function.
+1.  By wrapping your app in a higher order `provider`-function like, similiar to how `react-redux` does it.
+2.  Passing the store in the options object to the `connect` function.
 
 #### 1. By using a Provider
 
