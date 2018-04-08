@@ -2,7 +2,7 @@ type CompareFn = (a: any, b: any) => boolean
 
 function isDifferent(a: any, b: any): boolean {
   if (!a && !b) {
-    return typeof a === typeof b
+    return typeof a !== typeof b
   }
   if (a === b) {
     return false
