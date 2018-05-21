@@ -1,7 +1,7 @@
 const flattenArray = (arr: any[]): any[] => [].concat.apply([], arr)
 
-const isObj = a => {
-  return a && typeof a === 'object' && !Array.isArray(a)
+const isObj = arg => {
+  return Object.prototype.toString.call(arg) === '[object Object]'
 }
 
 const shallowMerge = (a: {}, b: {}): {} => {

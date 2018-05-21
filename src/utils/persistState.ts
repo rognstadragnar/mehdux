@@ -1,16 +1,4 @@
-import { IState } from '../types'
-
-export interface IConfig {
-  key: string
-  expire?: number
-  interval?: number
-}
-
-export interface IPersistState {
-  set: (State) => IState
-  get: () => IState
-  purge: () => void
-}
+import { IConfig, IPersistState, IState } from '../types'
 
 const now = () => new Date().getTime()
 const shouldBeDebounced = (lastSet?: number, interval?: number) => {

@@ -1,3 +1,4 @@
+import { Middlewares } from './types'
 // import { MapStateToProps } from './types'
 export type Dispatch = (actionName: string, ...args: any[]) => void
 export type IState = any
@@ -46,11 +47,21 @@ export type IStore = (
   mapActions: MapActionsToProps
 ) => any
 
+export interface IStoreFactory {
+  new (
+    initialState: IState,
+    initialActions: IActions,
+    middlewares: Middlewares
+  ): IStoreInstance
+}
+
 export interface IStoreInstance {
+  __INITIAL_ACTIONS__: IActions
+  __MIDDLEWARES__: Middlewares
   __IS_COMBINED_STORE__: boolean
   connect: Connect
-  getState: (m: MapStateToProps) => IState
-  getActions: (a: MapActionsToProps) => IParsedActions
+  getState: (m?: MapStateToProps) => IState
+  getActions: (a?: MapActionsToProps) => IParsedActions
 }
 
 export type Connect = (
@@ -66,3 +77,20 @@ export interface IMiddlewareArg {
 
 export type Middleware = (newState: IState, arg: IMiddlewareArg) => IState
 export type Middlewares = Middleware[]
+
+export interface IStoresObject {
+  [key: string]: IStoreInstance
+}
+export type combinedMiddlewares = Middlewares[] | true
+
+export interface IConfig {
+  key: string
+  expire?: number
+  interval?: number
+}
+
+export interface IPersistState {
+  set: (State) => IState
+  get: () => IState
+  purge: () => void
+}

@@ -1,4 +1,5 @@
-import { isDifferent } from './diff'
+import { deepEnoughEquals } from '@rognstadragnar/deep-enough-equals'
+import { IStoreInstance } from './../types'
 import { isObj } from './shallowMerge'
 
 import {
@@ -12,9 +13,10 @@ import {
   IConnectOptions,
   IDispose,
   IExtraSetStateArgs,
+  IMiddlewareArg,
   IParsedActions,
   IState,
-  IMiddlewareArg,
+  IStoreFactory,
   MapActionsToProps,
   MapStateToProps,
   Middlewares,
@@ -32,103 +34,112 @@ type CreateActionsFn = (
 const assembleStore = (
   createActionsFn: CreateActionsFn,
   isCombinedStore: boolean = false
-) => {
-  return function createStore(
-    initialState: IState = {},
-    initialActions: IActions = {},
-    middlewares: Middlewares = []
-  ) {
-    let connections: Connection[] = []
-    let state: IState = initialState
-    const actions: IParsedActions = createActionsFn(
-      initialActions,
-      getState,
-      getActions,
-      setState
-    )
-
-    function emit(): void {
-      connections.forEach(con => con())
+): IStoreFactory => {
+  return class Store implements IStoreInstance {
+    public __IS_COMBINED_STORE__: boolean
+    public __INITIAL_ACTIONS__: IActions
+    public __MIDDLEWARES__: Middlewares
+    private connections: Connection[] = []
+    private state: IState
+    private actions: IParsedActions
+    private middlewares: Middlewares
+    constructor(
+      initialState: IState = {},
+      initialActions: IActions = {},
+      middlewares: Middlewares = []
+    ) {
+      this.state = initialState
+      this.actions = createActionsFn(
+        initialActions,
+        this.getState,
+        this.getActions,
+        this.setState
+      )
+      this.__IS_COMBINED_STORE__ = isCombinedStore
+      this.__INITIAL_ACTIONS__ = initialActions
+      this.__MIDDLEWARES__ = middlewares
     }
 
-    function setState(newState: IState, extras: IExtraSetStateArgs = {}): void {
-      if (newState !== undefined && isDifferent(state, newState)) {
-        if (middlewares && middlewares.length > 0) {
-          newState = middlewares.reduce((pv, cv) => {
-            return cv(pv, {
-              args: extras.args,
-              name: extras.name,
-              prevState: getState()
-            })
-          }, newState)
-        }
-        if (Array.isArray(state)) {
-          state = [...newState]
-        } else if (typeof state === 'object') {
-          state = {
-            ...state,
-            ...newState
-          }
-        } else {
-          state = newState
-        }
-
-        emit()
-      }
-    }
-
-    function dispose(connection: Connection): void {
-      connections = connections.filter(c => c !== connection)
-    }
-
-    function getState(mapStateToProps?: MapStateToProps) {
-      if (mapStateToProps === null) {
-        return {}
-      }
-      return mapStateToProps ? mapStateToProps(state) : state
-    }
-
-    function getActions(mapActionsToProps?: MapActionsToProps): IParsedActions {
+    public getActions = (
+      mapActionsToProps?: MapActionsToProps
+    ): IParsedActions => {
       if (mapActionsToProps === null) {
         return {}
       }
-      return mapActionsToProps ? mapActionsToProps(actions) : actions
+      return mapActionsToProps ? mapActionsToProps(this.actions) : this.actions
     }
 
-    this.__IS_COMBINED_STORE__ = isCombinedStore
-    this.__INITIAL_ACTIONS__ = initialActions
-    this.__MIDDLEWARES__ = middlewares
-    this.actions = actions
-    this.getState = getState
-    this.setState = setState
-    this.getActions = getActions
-    this.connect = (opts: IConnectOptions = {}) => {
+    public getState = (mapStateToProps?: MapStateToProps) => {
+      if (mapStateToProps === null) {
+        return {}
+      }
+      return mapStateToProps ? mapStateToProps(this.state) : this.state
+    }
+
+    public setState = (
+      newState: IState,
+      extras: IExtraSetStateArgs = {}
+    ): void => {
+      if (newState !== undefined && !deepEnoughEquals(this.state, newState)) {
+        if (this.middlewares && this.middlewares.length > 0) {
+          newState = this.middlewares.reduce((pv, cv) => {
+            return cv(pv, {
+              args: extras.args,
+              name: extras.name,
+              prevState: this.getState()
+            })
+          }, newState)
+        }
+        if (Array.isArray(this.state)) {
+          this.state = [...newState]
+        } else if (typeof this.state === 'object') {
+          this.state = {
+            ...this.state,
+            ...newState
+          }
+        } else {
+          this.state = newState
+        }
+
+        this.emit()
+      }
+    }
+
+    public connect = (opts: IConnectOptions = {}) => {
       const {
         mapStateToProps,
         mapActionsToProps,
         force = false,
         leading = false
       } = opts
-      let prevState = getState(mapStateToProps)
+      let prevState = this.getState(mapStateToProps)
       return (consumer: Consumer): IDispose => {
         const connection = (): void => {
-          const currentState = getState(mapStateToProps)
-          if (force || isDifferent(prevState, currentState)) {
+          const currentState = this.getState(mapStateToProps)
+          if (force || !deepEnoughEquals(prevState, currentState)) {
             prevState = currentState
-            consumer(currentState, getActions(mapActionsToProps))
+            consumer(currentState, this.getActions(mapActionsToProps))
           }
         }
         if (leading) {
-          consumer(prevState, getActions(mapActionsToProps))
+          consumer(prevState, this.getActions(mapActionsToProps))
         }
 
-        connections.push(connection)
+        this.connections.push(connection)
         return {
           dispose: () => {
-            dispose(connection)
+            this.dispose(connection)
           }
         }
       }
+    }
+
+    private emit() {
+      this.connections.forEach(con => con())
+    }
+
+    private dispose(connection: Connection): void {
+      this.connections = this.connections.filter(c => c !== connection)
     }
   }
 }

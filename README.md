@@ -15,8 +15,8 @@
 > Just another tiny, simple state machine
 
 * 💆 Easy to grasp API
-* 🐎 ~850 bytes: Tiny, small, slim, light, slender, fit
-* ⚛️ Small React (~700 bytes), Preact (~600 bytes) and Picodom (~200 bytes) integrations
+* 🐎 ~1kb: Tiny, small, slim, light, slender, fit
+* ⚛️ Small React (~850 bytes), Preact (~800 bytes) and Picodom (~200 bytes) integrations
 * 😌 Support for `thunk actions`, `middlewares`, `combining stores`
 * 🛂 Written in `TypeScript`
 * 🎉 WordArt logo
