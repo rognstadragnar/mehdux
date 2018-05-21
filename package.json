@@ -25,24 +25,17 @@
     "react": "*"
   },
   "scripts": {
-    "release":
-      "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "bundle:main": "microbundle",
     "dev:main": "microbundle watch --compress false",
-    "dev:utils":
-      "microbundle watch src/utils.ts -o utils.js -f cjs --compress false",
+    "dev:utils": "microbundle watch src/utils.ts -o utils.js -f cjs --compress false",
     "bundle:utils": "microbundle src/utils.ts -o ./utils.js -f cjs",
-    "bundle:picodom":
-      "microbundle src/bindings/picodom.ts -o picodom.js -f cjs",
-    "bundle:preact":
-      "microbundle src/bindings/preact/index.ts -o ./preact.js -f cjs",
-    "bundle:react":
-      "microbundle src/bindings/react/index.ts -o ./react.js -f cjs",
+    "bundle:picodom": "microbundle src/bindings/picodom.ts -o picodom.js -f cjs",
+    "bundle:preact": "microbundle src/bindings/preact/index.ts -o ./preact.js -f cjs",
+    "bundle:react": "microbundle src/bindings/react/index.ts -o ./react.js -f cjs",
     "prepare": "npm run build",
-    "build":
-      "npm run clean && npm run bundle:main && npm run bundle:utils && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
-    "clean":
-      "rimraf dist preact.js preact.js.map react.js react.js.map picodom.js picodom.js.map utils.js utils.js.map",
+    "build": "npm run clean && npm run bundle:main && npm run bundle:utils && npm run bundle:picodom && npm run bundle:preact && npm run bundle:react",
+    "clean": "rimraf dist preact.js preact.js.map react.js react.js.map picodom.js picodom.js.map utils.js utils.js.map",
     "test": "echo 'should add some tests.. :)'"
   },
   "files": [
