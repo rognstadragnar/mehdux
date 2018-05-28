@@ -20,13 +20,10 @@ const createActions = (
     const newState = fn(currentState, getActions())(...args)
     setState(newState, { name: key, args })
   }
-  // return mapObj(actions, returnFn)
 
   return Object.keys(actions).reduce((pv, cv) => {
-    return {
-      ...pv,
-      [cv]: returnFn(actions[cv], cv)
-    }
+    pv[cv] = returnFn(actions[cv], cv)
+    return pv
   }, {})
 }
 
@@ -50,15 +47,12 @@ const createNestedActions = (
   }
 
   return Object.keys(actions).reduce((pv, cv) => {
-    return {
-      ...pv,
-      [cv]: Object.keys(actions[cv]).reduce((pInnerV, cInnerV) => {
-        return {
-          ...pInnerV,
-          [cInnerV]: transformFn(cv, cInnerV, actions[cv][cInnerV])
-        }
-      }, {})
-    }
+    pv[cv] = Object.keys(actions[cv]).reduce((pInnerV, cInnerV) => {
+      pInnerV[cInnerV] = transformFn(cv, cInnerV, actions[cv][cInnerV])
+      return pInnerV
+    }, {})
+
+    return pv
   }, {})
 }
 
