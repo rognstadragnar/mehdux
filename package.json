@@ -11,14 +11,14 @@
   "browser": "dist/mehdux.umd.js",
   "types": "src/index.d.ts",
   "devDependencies": {
-    "@types/react": "^16.0.38",
-    "microbundle": "^0.4.4",
-    "preact": "^8.2.7",
-    "prettier": "^1.10.2",
-    "react": "^16.2.0",
+    "@types/react": "^16.7.13",
+    "microbundle": "^0.8.3",
+    "preact": "^8.4.2",
+    "prettier": "^1.15.3",
+    "react": "^16.6.3",
     "rimraf": "^2.6.2",
-    "tslint": "^5.9.1",
-    "tslint-config-prettier": "^1.8.0"
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.17.0"
   },
   "peerDependencies": {
     "preact": "*",

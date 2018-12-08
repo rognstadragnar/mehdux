@@ -9,7 +9,11 @@ node_modules
 /react.js
 /react.js.map
 /utils.js
+/utils.d.ts
 /utils.js.map
 /picodom.js
 /picodom.js.map
 .rpt2_cache
+.rts2_cache_cjs
+.rts2_cache_es
+.rts2_cache_umd
